@@ -8,10 +8,12 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.4.1",
     "nuxt": "^3.2.2"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.7",
-    "appwrite": "^10.2.0"
+    "appwrite": "^10.2.0",
+    "flowbite": "^1.6.3"
   }
 }

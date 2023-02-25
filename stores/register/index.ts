@@ -1,6 +1,9 @@
 import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
 import api from "~/api";
+import {$ref} from "vue/macros";
+import {useRoot} from "~/stores";
+import {AppwriteException} from "appwrite";
 
 export const useRegister = defineStore('register', {
     state: () => ({
@@ -46,7 +49,11 @@ export const useRegister = defineStore('register', {
             api.createAccount(this.email, this.password, this.name).then((value) => {
                 navigateTo('/login')
             }).catch((reason) => {
-                console.log(reason)
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+
             }).finally(() => {
                 this.setIsLoading(false)
             })

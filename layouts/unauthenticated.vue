@@ -1,5 +1,5 @@
 <template>
-  <Toast message="Hello World!"/>
+  <Toast />
 
   <div class="flex flex-col h-screen justify-center">
     <slot/>

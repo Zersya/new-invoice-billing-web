@@ -24,6 +24,7 @@ export const useLogin = defineStore('login', {
             const result = await api.createSession(this.email, this.password)
 
 
+
         },
 
     }

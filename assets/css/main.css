@@ -1,0 +1,10 @@
+.required-field::after {
+    content: " *";
+    color: #ff0000;
+    font-size: 1em;
+    font-weight: bold;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+

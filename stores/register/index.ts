@@ -46,7 +46,7 @@ export const useRegister = defineStore('register', {
 
             this.setIsLoading(true)
 
-            api.createAccount(this.email, this.password, this.name).then((value) => {
+            api.createAccount(this.email, this.password, this.name).then((_) => {
                 navigateTo('/login')
             }).catch((reason) => {
 

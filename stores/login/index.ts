@@ -1,13 +1,19 @@
 import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
 import api from "~/api";
+import {AppwriteException} from "appwrite";
 
 export const useLogin = defineStore('login', {
     state: () => ({
-        email: '',
-        password: '',
+        email: 'zeinersyad@gmail.com',
+        password: 'password',
         isLoading: false,
     }),
+    getters: {
+        isFormValid(): boolean {
+            return this.email !== '' && this.password !== ''
+        }
+    },
     actions: {
         setEmail(email: string) {
             this.email = email
@@ -18,12 +24,24 @@ export const useLogin = defineStore('login', {
         setIsLoading(isLoading: boolean) {
             this.isLoading = isLoading
         },
-        async onSubmitLogin() {
+        onSubmitLogin() {
+            if (!this.email || !this.password) {
+                return
+            }
+
             this.setIsLoading(true)
 
-            const result = await api.createSession(this.email, this.password)
+            api.createSession(this.email, this.password).then((_) => {
+                navigateTo('/dashboard')
+            }).catch((e) => {
 
+                if (e instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(e.message)
+                }
 
+            }).finally(() => {
+                this.setIsLoading(false)
+            })
 
         },
 

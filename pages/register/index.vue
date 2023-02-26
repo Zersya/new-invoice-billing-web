@@ -7,5 +7,6 @@
 definePageMeta({
   title: "LoginPage",
   layout: "unauthenticated",
+  middleware: ['is-guest']
 });
 </script>

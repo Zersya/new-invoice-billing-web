@@ -24,4 +24,8 @@ export default defineNuxtConfig({
     plugins: [
         '~/plugins/toast-notifier.ts',
     ],
+
+    css: [
+        '~/assets/css/main.css'
+    ],
 })

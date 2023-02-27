@@ -1,6 +1,7 @@
 .required-field::after {
     content: " *";
     color: #ff0000;
+    z-index: 1;
     font-size: 1em;
     font-weight: bold;
     position: relative;

@@ -1,7 +1,7 @@
 <template>
-  <h1>Hello Dashboard</h1>
-  <Button :is-loading="isLoading" @click="signOut">Signout</Button>
-  <a class="mt-4" href="/login">Login</a>
+    <h1>Hello Dashboard</h1>
+    <Button :is-loading="isLoading" @click="signOut">Signout</Button>
+    <a class="mt-4" href="/login">Login</a>
 </template>
 
 <script setup lang="ts">

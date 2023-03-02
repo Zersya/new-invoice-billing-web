@@ -1,12 +1,12 @@
 <template>
-  <FormLogin/>
+    <FormLogin/>
 </template>
 
 <script setup lang="ts">
 
 definePageMeta({
   title: "LoginPage",
-  layout: "unauthenticated",
+  layout: 'unauthenticated',
   middleware: ['is-guest']
 });
 </script>

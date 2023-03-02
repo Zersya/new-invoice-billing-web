@@ -1,10 +1,11 @@
 <template>
-  <Toast/>
+  <ClientOnly>
+    <Toast/>
 
-  <div class="flex flex-col h-screen justify-center">
-    <InvingLoading v-show="rootLoading"/>
-    <slot/>
-  </div>
+    <div class="flex flex-col h-screen justify-center">
+      <slot/>
+    </div>
+  </ClientOnly>
 </template>
 
 

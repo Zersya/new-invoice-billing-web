@@ -1,7 +1,9 @@
 <template>
+  <div class="flex-col w-full m-4">
     <h1>Hello Dashboard</h1>
     <Button :is-loading="isLoading" @click="signOut">Signout</Button>
     <a class="mt-4" href="/login">Login</a>
+  </div>
 </template>
 
 <script setup lang="ts">

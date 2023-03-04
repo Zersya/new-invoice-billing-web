@@ -42,9 +42,9 @@ module.exports = {
             },
         },
         fontFamily: {
-            sans: ["Poppins", "sans-serif"],
-            serif: ["Poppins", "serif"],
-            body: ["Poppins", "sans-serif"],
+            sans: ["Inter", "sans-serif"],
+            serif: ["Inter", "serif"],
+            body: ["Inter", "sans-serif"],
         },
     },
     plugins: [require("flowbite"), require('flowbite/plugin')],

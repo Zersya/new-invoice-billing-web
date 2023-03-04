@@ -2,13 +2,9 @@
   <ClientOnly>
     <Toast/>
 
-    <div class="flex flex-col justify-center">
-      <div class="sm:ml-64">
-        <h2 class="m-4 text-2xl font-bold text-gray-900 dark:text-gray-50">
-          {{ pageTitle }}
-        </h2>
-      </div>
-      <slot/>
+    <div class="flex">
+      <Sidebar/>
+      <slot />
     </div>
   </ClientOnly>
 </template>
@@ -17,6 +13,7 @@
 import Toast from "~/components/general/Toast.vue";
 import InvingLoading from "~/components/general/InvingLoading.vue";
 import {usePageTitle, useRootLoading} from "~/composables/states";
+import Sidebar from "~/components/Sidebar.vue";
 
 defineNuxtComponent({
   name: "AuthenticationLayout",

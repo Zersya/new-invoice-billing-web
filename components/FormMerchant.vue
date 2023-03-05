@@ -92,8 +92,7 @@
               </div>
             </div>
           </div>
-          {{ store.$state }}
-          <Button :is-loading="store.isLoading" :disabled="!store.isFormValid" @click="store.onSubmitCreate()">
+          <Button :is-loading="store.isLoadingSubmit" :disabled="!store.isFormValid" @click="store.onSubmitCreate()">
             Add new Merchant
           </Button>
         </form>
@@ -104,10 +103,8 @@
 
 <script setup lang="ts">
 import Button from "~/components/general/Button.vue"
-import { Models } from "appwrite";
 import {Dropdown, initDropdowns, initModals} from "flowbite";
-import api from "~/api";
-import { useCreateMerchant } from '../stores/merchant/index';
+import { useCreateMerchant } from '../stores/merchant/form/index';
 
 const store = useCreateMerchant()
 
@@ -115,10 +112,6 @@ const store = useCreateMerchant()
 onMounted(() => {
   initModals()
   initDropdowns()
-
-  api.getAccount().then((response: Models.Account<Models.Preferences>) => {
-    store.setOwnerId(response.$id)
-  })
 })
 
 const countryCodes = [

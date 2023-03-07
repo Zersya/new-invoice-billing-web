@@ -1,9 +1,10 @@
 import {defineStore} from 'pinia'
 import api from "~/api";
 import {AppwriteException} from "appwrite";
+import {Merchant} from "~/types/merchant";
 
 interface FormState {
-
+    id?: string
     name?: string
     description?: string
     address?: string
@@ -15,8 +16,9 @@ interface FormState {
 
 }
 
-export const useCreateMerchant = defineStore('createMerchant', {
+export const useFormMerchant = defineStore('formMerchant', {
     state: (): FormState => ({
+        id: '',
         name: '',
         description: '',
         address: '',
@@ -32,6 +34,16 @@ export const useCreateMerchant = defineStore('createMerchant', {
         }
     },
     actions: {
+        setMerchant(merchant: Merchant) {
+            this.id = merchant.$id
+            this.name = merchant.name
+            this.description = merchant.description
+            this.address = merchant.address
+            this.phoneCountry = merchant.phone_country_code
+            this.phone = merchant.phone_number
+            this.tax = merchant.tax * 100
+            this.merchantCode = merchant.merchant_code
+        },
         setName(name: string) {
             this.name = name
             this.setMerchantCode()
@@ -68,6 +80,7 @@ export const useCreateMerchant = defineStore('createMerchant', {
         },
 
         reset() {
+            this.id = ''
             this.name = ''
             this.description = ''
             this.address = ''
@@ -76,6 +89,28 @@ export const useCreateMerchant = defineStore('createMerchant', {
             this.tax = 0
             this.merchantCode = ''
             this.isLoadingSubmit = false
+        },
+
+        async onSubmitDelete() {
+            if (!this.id) {
+                return
+            }
+
+            this.isLoadingSubmit = true
+
+            const config = useRuntimeConfig();
+
+            await api.deleteDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', this.id).then((_) => {
+                useNuxtApp().$toast.showSuccess('Merchant deleted successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+
+            }).finally(() => {
+                this.isLoadingSubmit = false
+            })
         },
 
         async onSubmitCreate() {
@@ -97,13 +132,13 @@ export const useCreateMerchant = defineStore('createMerchant', {
 
             const config = useRuntimeConfig();
 
-            api.createDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', {
+            await api.createDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', {
                 name: this.name,
                 description: this.description,
                 address: this.address,
                 phone_country_code: this.phoneCountry,
                 phone_number: this.phone,
-                tax: this.tax,
+                tax: cvtTax,
                 merchant_code: this.merchantCode,
                 owner_id: responseAccount.$id,
             }).then((_) => {

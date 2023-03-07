@@ -12,14 +12,16 @@
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
         <li v-for="merchant in store.listMerchant" :key="merchant.$id">
-          <button type="button" data-modal-toggle="form-modal-merchant"
+          <button type="button" @click="selectMerchant(merchant)"
                   class="hover:cursor-pointer h-10 my-3 flex justify-center items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-md  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
             </span>
             <span
-                class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{ merchant.name }}</span>
+                class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
+                merchant.name
+              }}</span>
           </button>
         </li>
         <li>
@@ -59,24 +61,30 @@ import {useFetchMerchant} from '~/stores/merchant';
 import {Modal} from "flowbite";
 import type {ModalInterface} from "flowbite";
 import {provide} from "#imports";
-import {useCreateMerchant} from "~/stores/merchant/form";
+import {useFormMerchant} from "~/stores/merchant/form";
+import {Merchant} from "~/types/merchant";
 
 const store = useFetchMerchant()
 
-let modal: ModalInterface | null = null
-
+let modal = ref<ModalInterface | null>(null)
+provide('modal-form-merchant', modal)
 
 onMounted(() => {
   store.fetchMerchants()
 
   const $modal = document.getElementById('form-modal-merchant')
-  modal = new Modal($modal, {
+  modal.value = new Modal($modal, {
     onHide: () => {
-      useCreateMerchant().reset()
+      useFormMerchant().reset()
     }
   })
 
-  provide('modal-form-merchant', modal)
 })
+
+function selectMerchant(merchant: Merchant) {
+  useFormMerchant().setMerchant(merchant)
+
+  modal.value?.toggle()
+}
 
 </script>

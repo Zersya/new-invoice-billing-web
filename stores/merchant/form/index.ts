@@ -11,13 +11,12 @@ interface FormState {
     phone?: string
     tax?: number
     merchantCode?: string
-    ownerId?: string
     isLoadingSubmit: boolean
 
 }
 
 export const useCreateMerchant = defineStore('createMerchant', {
-    state: () : FormState => ({
+    state: (): FormState => ({
         name: '',
         description: '',
         address: '',
@@ -25,12 +24,11 @@ export const useCreateMerchant = defineStore('createMerchant', {
         phone: '',
         tax: 0,
         merchantCode: '',
-        ownerId: '',
         isLoadingSubmit: false,
     }),
     getters: {
         isFormValid(): boolean {
-            return this.name !== '' && this.description !== '' && this.merchantCode !== '' && this.ownerId !== ''
+            return this.name !== '' && this.description !== '' && this.merchantCode !== '' && this.phone !== ''
         }
     },
     actions: {
@@ -57,11 +55,9 @@ export const useCreateMerchant = defineStore('createMerchant', {
 
         setTax(tax: string) {
             try {
-            const taxNumber = Number(tax)
-            this.tax = taxNumber / 100
+                this.tax = Number(tax)
             } catch (e) {
                 useNuxtApp().$toast.showError('Invalid tax value')
-                this.tax = 0
             }
         },
 
@@ -71,8 +67,15 @@ export const useCreateMerchant = defineStore('createMerchant', {
             this.merchantCode = code
         },
 
-        setOwnerId(ownerId: string) {
-            this.ownerId = ownerId
+        reset() {
+            this.name = ''
+            this.description = ''
+            this.address = ''
+            this.phoneCountry = '62'
+            this.phone = ''
+            this.tax = 0
+            this.merchantCode = ''
+            this.isLoadingSubmit = false
         },
 
         async onSubmitCreate() {
@@ -82,9 +85,15 @@ export const useCreateMerchant = defineStore('createMerchant', {
             }
 
             this.isLoadingSubmit = true
-            
+
+            let cvtTax: number = 0
+            try {
+                cvtTax = Number(this.tax) / 100
+            } catch (e) {
+                useNuxtApp().$toast.showError('Invalid tax value')
+            }
+
             const responseAccount = await api.getAccount()
-            this.setOwnerId(responseAccount.$id)
 
             const config = useRuntimeConfig();
 
@@ -96,7 +105,7 @@ export const useCreateMerchant = defineStore('createMerchant', {
                 phone_number: this.phone,
                 tax: this.tax,
                 merchant_code: this.merchantCode,
-                owner_id: this.ownerId,
+                owner_id: responseAccount.$id,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Merchant created successfully')
             }).catch((reason) => {

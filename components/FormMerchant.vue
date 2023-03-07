@@ -1,5 +1,5 @@
 <template>
-  <div id="modal-merchant" tabindex="-1" aria-hidden="true"
+  <div id="form-modal-merchant" tabindex="-1" aria-hidden="true"
        class="absolute hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
       <!-- Modal content -->
@@ -11,7 +11,7 @@
           </h3>
           <button type="button"
                   class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  data-modal-toggle="modal-merchant">
+                  @click="modal?.hide()">
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                  xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -22,27 +22,33 @@
           </button>
         </div>
         <!-- Modal body -->
-        <form action="#">
+        <form>
           <div class="grid gap-4 mb-4 sm:grid-cols-2">
             <div>
               <label for="name"
                      class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
               <input type="text" name="name" id="name"
                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                     placeholder="Type merchant name" required @input="store.setName($event.target.value as string)">
+                     placeholder="Type merchant name" required
+                     :value="store.name"
+                     @input="store.setName($event.target.value)">
             </div>
             <div>
               <label for="description"
                      class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
               <input type="text" name="description" id="description"
                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                     placeholder="Type merchant description" required @input="store.setDescription($event.target.value as string)">
+                     placeholder="Type merchant description" required
+                     :value="store.description"
+                     @input="store.setDescription($event.target.value)">
             </div>
             <div>
               <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
               <textarea type="text" name="address" id="address"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Product address" @input="store.setAddress($event.target.value as string)"/>
+                        placeholder="Merchant address"
+                        :value="store.address"
+                        @input="store.setAddress($event.target.value)"/>
             </div>
             <div>
 
@@ -67,7 +73,8 @@
                     <li v-for="code in countryCodes" :key="code.code">
                       <button type="button"
                               class="flex items-center justify-between w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
-                              data-dropdown-value="dropdown-phone-country" @click="setCountryCode(code.code)">
+                              data-dropdown-value="dropdown-phone-country" :value="store.phoneCountry"
+                              @click="setCountryCode(code.code)">
                         <span>{{ code.name }}</span>
                         <span class="text-gray-500 dark:text-gray-400">+{{ code.code }}</span>
                       </button>
@@ -76,15 +83,21 @@
                 </div>
                 <input type="text" name="phone" id="phone"
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                       placeholder="Type merchant phone" required @input="store.setPhone($event.target.value as string)">
+                       placeholder="Type merchant phone" required
+                       :value="store.phone"
+                       @input="store.setPhone($event.target.value)">
               </div>
             </div>
-            <div class="w-24">
+            <div class="w-32">
               <label for="tax" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tax</label>
               <div class="flex">
                 <input type="number" name="tax" id="tax"
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                       placeholder="0" @input="store.setTax($event.target.value as string)">
+                       placeholder="0"
+                       :min="0"
+                       :max="100"
+                       :value="store.tax"
+                       @input="store.setTax($event.target.value)">
                 <span
                     class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-l-0 border-gray-300 rounded-r-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                   %
@@ -103,15 +116,18 @@
 
 <script setup lang="ts">
 import Button from "~/components/general/Button.vue"
-import {Dropdown, initDropdowns, initModals} from "flowbite";
-import { useCreateMerchant } from '../stores/merchant/form/index';
+import {Dropdown, initDropdowns} from "flowbite";
+import type {ModalInterface} from "flowbite";
+import {useCreateMerchant} from '~/stores/merchant/form';
 
 const store = useCreateMerchant()
+let modal: ModalInterface | null = null
 
 
 onMounted(() => {
-  initModals()
   initDropdowns()
+
+  inject('modal-form-merchant', modal as ModalInterface)
 })
 
 const countryCodes = [

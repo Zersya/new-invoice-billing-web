@@ -1,5 +1,5 @@
 <template>
-  <FormMerchant/>
+  <FormMerchant :merchant="null" :modal="modal"/>
 
   <div
       class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-64 transition-transform -translate-x-full sm:translate-x-0"
@@ -12,16 +12,18 @@
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
         <li v-for="merchant in store.listMerchant" :key="merchant.$id">
-          <button type="button" data-modal-toggle="modal-merchant"
+          <button type="button" data-modal-toggle="form-modal-merchant"
                   class="hover:cursor-pointer h-10 my-3 flex justify-center items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-            <span class="flex items-center justify-center w-4 h-4 p-3 text-lg font-semibold text-white bg-gray-500 rounded-full">
+            <span
+                class="flex items-center justify-center w-4 h-4 p-3 text-md  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
             </span>
-            <span class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{merchant.name}}</span>
+            <span
+                class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{ merchant.name }}</span>
           </button>
         </li>
         <li>
-          <button type="button" data-modal-toggle="modal-merchant"
+          <button @click="modal?.toggle()" type="button"
                   class="hover:cursor-pointer h-10 my-3 flex justify-center items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <div>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -35,14 +37,16 @@
       </ul>
       <ul class="space-y-2 border-t border-gray-200 dark:border-gray-700">
         <li>
-          <button class="flex my-3 items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+          <button
+              class="flex my-3 items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <svg aria-hidden="true"
-                class="fl ex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                 class="fl ex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path
                   d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
             </svg>
-            <span class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
+            <span
+                class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
           </button>
         </li>
       </ul>
@@ -51,12 +55,28 @@
 </template>
 
 <script setup lang="ts">
-import { useFetchMerchant } from '../stores/merchant/index';
+import {useFetchMerchant} from '~/stores/merchant';
+import {Modal} from "flowbite";
+import type {ModalInterface} from "flowbite";
+import {provide} from "#imports";
+import {useCreateMerchant} from "~/stores/merchant/form";
 
 const store = useFetchMerchant()
 
+let modal: ModalInterface | null = null
+
+
 onMounted(() => {
   store.fetchMerchants()
+
+  const $modal = document.getElementById('form-modal-merchant')
+  modal = new Modal($modal, {
+    onHide: () => {
+      useCreateMerchant().reset()
+    }
+  })
+
+  provide('modal-form-merchant', modal)
 })
 
 </script>

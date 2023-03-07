@@ -39,6 +39,8 @@ export const useLogin = defineStore('login', {
                     useNuxtApp().$toast.showError(e.message)
                 }
 
+                console.log(e)
+
             }).finally(() => {
                 this.setIsLoading(false)
             })

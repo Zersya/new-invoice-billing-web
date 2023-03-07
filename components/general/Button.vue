@@ -1,7 +1,7 @@
 <template>
   <button :type="props.type"
           :disabled="props.disabled || props.isLoading"
-          :class="buttonClass()" @click.prevent="$emit('click')">
+          :class="buttonClass()" @click="$emit('click')">
     <SpinnerLoading v-if="props.isLoading" class="inline" loading-color="fill-primary-200" />
     <slot v-else />
   </button>
@@ -13,7 +13,7 @@ import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 const props = defineProps({
   type: {
     type: String,
-    default: 'submit'
+    default: 'button'
   },
   disabled: {
     type: Boolean,

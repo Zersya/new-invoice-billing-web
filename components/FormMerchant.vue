@@ -36,7 +36,7 @@
           </button>
         </div>
         <!-- Modal body -->
-        <form>
+        <form @submit.prevent="onSubmit">
           <div class="grid gap-4 mb-4 sm:grid-cols-2">
             <div>
               <label for="name"
@@ -119,7 +119,7 @@
               </div>
             </div>
           </div>
-          <Button :is-loading="store.isLoadingSubmit" :disabled="!store.isFormValid" @click="onSubmit">
+          <Button :is-loading="store.isLoadingSubmit" :disabled="!store.isFormValid" type="submit">
             {{ store.id ? 'Update' : 'Create' }}
           </Button>
         </form>

@@ -167,7 +167,11 @@ const setCountryCode = (code: string) => {
 }
 
 async function onSubmit() {
-  await store.onSubmitCreate()
+  if (store.id) {
+    await store.onSubmitUpdate()
+  } else {
+    await store.onSubmitCreate()
+  }
 
   modal.value?.hide()
 

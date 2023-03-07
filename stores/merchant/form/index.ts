@@ -113,6 +113,43 @@ export const useFormMerchant = defineStore('formMerchant', {
             })
         },
 
+        async onSubmitUpdate() {
+            if (!this.isFormValid || !this.id) {
+                return
+            }
+
+            this.isLoadingSubmit = true
+
+            let cvtTax: number = 0
+            try {
+                cvtTax = Number(this.tax) / 100
+            } catch (e) {
+                useNuxtApp().$toast.showError('Invalid tax value')
+            }
+
+            const config = useRuntimeConfig();
+
+            await api.updateDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', this.id, {
+                name: this.name,
+                description: this.description,
+                address: this.address,
+                phone_country_code: this.phoneCountry,
+                phone_number: this.phone,
+                tax: cvtTax,
+                merchant_code: this.merchantCode,
+            }).then((_) => {
+                useNuxtApp().$toast.showSuccess('Merchant updated successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+
+            }).finally(() => {
+                this.isLoadingSubmit = false
+            })
+        },
+
         async onSubmitCreate() {
 
             if (!this.isFormValid) {

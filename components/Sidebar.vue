@@ -5,10 +5,22 @@
       class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-64 transition-transform -translate-x-full sm:translate-x-0"
       aria-label="Sidebar">
     <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
-      <a href="https://app.inving.co/" class="flex mb-5">
-        <img class="w-10" src="/logo-inving.png" alt="Inving Logo"/>
-        <span class="ml-4 text-lg font-semibold text-gray-800 dark:text-gray-200 md:block">Inving</span>
-      </a>
+      <div class="flex justify-between items-center mb-5">
+        <a href="https://app.inving.co/" class="flex">
+          <img class="w-10" src="/logo-inving.png" alt="Inving Logo"/>
+          <span class="ml-4 text-lg font-semibold text-gray-800 dark:text-gray-200 md:block">Inving</span>
+        </a>
+        <!-- button signout -->
+        <button @click="signOut" type="button"
+                class="hover:cursor-pointer h-10 my-3 flex justify-center items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+          <svg v-if="!isLoadingSignout" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor"
+                  d="M16 17v-3H9v-4h7V7l5 5l-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9Z"/>
+          </svg>
+
+          <SpinnerLoading v-else class="inline"  loading-color="fill-primary-200" />
+        </button>
+      </div>
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
         <li v-for="merchant in store.listMerchant" :key="merchant.$id">
@@ -57,14 +69,18 @@
 </template>
 
 <script setup lang="ts">
+import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 import {useFetchMerchant} from '~/stores/merchant';
 import {Modal} from "flowbite";
 import type {ModalInterface} from "flowbite";
 import {provide} from "#imports";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
+import api from "~/api";
+import {navigateTo} from "#app";
 
 const store = useFetchMerchant()
+const isLoadingSignout = ref(false)
 
 let modal = ref<ModalInterface | null>(null)
 provide('modal-form-merchant', modal)
@@ -85,6 +101,14 @@ function selectMerchant(merchant: Merchant) {
   useFormMerchant().setMerchant(merchant)
 
   modal.value?.toggle()
+}
+
+function signOut() {
+  isLoadingSignout.value = true
+  api.deleteCurrentSession().then(() => {
+    isLoadingSignout.value = false
+    navigateTo('/login')
+  })
 }
 
 </script>

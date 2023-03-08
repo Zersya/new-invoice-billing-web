@@ -64,8 +64,8 @@ let api = {
     },
 
     // Get all documents stored in a collection
-    listDocuments: (databaseID: string, collectionID: string) => {
-        return api.provider().database.listDocuments(databaseID, collectionID);
+    listDocuments: (databaseID: string, collectionID: string, queries?: string[]) => {
+        return api.provider().database.listDocuments(databaseID, collectionID, queries);
     },
 
     getDocument: (databaseID: string, collectionID: string, documentID: string) => {

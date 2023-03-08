@@ -50,7 +50,7 @@
             <!--                  Conditions</a></label>-->
             <!--              </div>-->
             <!--            </div>-->
-            <Button :is-loading="store.isLoading" :disabled="!store.isFormValid">
+            <Button :is-loading="store.isLoading" :disabled="!store.isFormValid" type="submit">
               Create an account
             </Button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">

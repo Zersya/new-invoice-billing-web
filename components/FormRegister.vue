@@ -11,7 +11,7 @@
           <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Create and account
           </h1>
-          <form class="space-y-4 md:space-y-6" v-on:submit.prevent="store.onSubmitRegister()">
+          <form class="space-y-4 md:space-y-6" @submit.prevent="store.onSubmitRegister()">
             <div>
               <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
               <input type="text" name="name" id="name"
@@ -50,7 +50,7 @@
             <!--                  Conditions</a></label>-->
             <!--              </div>-->
             <!--            </div>-->
-            <Button :is-loading="store.isLoading" :disabled="!store.isFormValid" @click="store.onSubmitRegister();">
+            <Button :is-loading="store.isLoading" :disabled="!store.isFormValid">
               Create an account
             </Button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">

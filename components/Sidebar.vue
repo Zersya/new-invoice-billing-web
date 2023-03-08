@@ -27,11 +27,11 @@
           <button type="button" @click="selectMerchant(merchant)"
                   class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <span
-                class="flex items-center justify-center w-4 h-4 p-3 text-md  font-semibold text-white bg-gray-500 rounded-full">
+                class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
             </span>
             <span
-                class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
+                class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
                 merchant.name
               }}</span>
           </button>
@@ -44,7 +44,7 @@
                 <path fill="currentColor"
                       d="M12 17q.425 0 .713-.288T13 16v-3h3.025q.425 0 .7-.288T17 12q0-.425-.288-.713T16 11h-3V7.975q0-.425-.288-.7T12 7q-.425 0-.713.288T11 8v3H7.975q-.425 0-.7.288T7 12q0 .425.288.713T8 13h3v3.025q0 .425.288.7T12 17Zm0 5q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-10Zm0 8q3.325 0 5.663-2.337T20 12q0-3.325-2.337-5.663T12 4Q8.675 4 6.337 6.337T4 12q0 3.325 2.337 5.663T12 20Z"/>
               </svg>
-              <span class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Create Merchant</span>
+              <span class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Create Merchant</span>
             </div>
           </button>
         </li>
@@ -60,7 +60,7 @@
                     d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3v10Z"/>
               </svg>
               <span
-                  class="ml-5 w-32 text-md text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
+                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
             </div>
           </button>
         </li>

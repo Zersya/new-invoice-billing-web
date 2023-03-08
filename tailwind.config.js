@@ -42,9 +42,8 @@ module.exports = {
             },
         },
         fontFamily: {
-            sans: ["Inter", "sans-serif"],
-            serif: ["Inter", "serif"],
-            body: ["Inter", "sans-serif"],
+            sans: ['Lato', 'system-ui', 'sans-serif'],
+            serif: ['Baskerville', 'Palatino', 'serif'],
         },
     },
     plugins: [require("flowbite"), require('flowbite/plugin')],

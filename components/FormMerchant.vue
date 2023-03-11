@@ -1,6 +1,6 @@
 <template>
-  <div id="form-modal-merchant" tabindex="-1" aria-hidden="true"
-       class="absolute hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
+  <div id="form-modal-merchant" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true"
+       class="animate-fade-in absolute hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full">
     <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
       <!-- Modal content -->
       <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
@@ -25,7 +25,7 @@
           </div>
           <button type="button"
                   class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  @click="modal?.hide()">
+                  @click="onCloseModal">
             <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
                  xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
@@ -57,7 +57,8 @@
                      @input="store.setDescription($event.target.value)">
             </div>
             <div>
-              <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+              <label for="address"
+                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
               <textarea type="text" name="address" id="address"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Merchant address"
@@ -166,6 +167,10 @@ const setCountryCode = (code: string) => {
   }
 }
 
+function onCloseModal() {
+  modal.value?.hide()
+}
+
 async function onSubmit() {
   if (store.id) {
     await store.onSubmitUpdate()
@@ -175,7 +180,7 @@ async function onSubmit() {
 
   modal.value?.hide()
 
-  useFetchMerchant().fetchMerchants()
+  await useFetchMerchant().fetchMerchants()
 }
 
 async function onDelete() {
@@ -183,6 +188,22 @@ async function onDelete() {
 
   modal.value?.hide()
 
-  useFetchMerchant().fetchMerchants()
+  await useFetchMerchant().fetchMerchants()
 }
 </script>
+
+<style>
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>

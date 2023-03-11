@@ -40,6 +40,38 @@ module.exports = {
                 },
                 background: "#1E1E1E"
             },
+            animation: {
+                'spin-once': 'spin 0.35s ease-in-out 1',
+                'fade-in': 'fade-in 0.35s ease-in-out 1',
+                'fade-out': 'fade-out 0.35s ease-in-out 1',
+                'slide-in': 'slide-in 0.35s ease-in-out 1',
+                'slide-out': 'slide-out 0.35s ease-in-out 1'
+            },
+            keyframes: {
+                'spin-once': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' },
+                },
+                'fade-in': {
+                    '0%': { opacity: 0 },
+                    '100%': { opacity: 1 },
+                },
+                'fade-out': {
+                    '0%': { opacity: 1 },
+                    '100%': { opacity: 0 },
+                },
+                'slide-in': {
+                    '0%': { transform: 'translateY(100%)' },
+                    '100%': { transform: 'translateY(0%)' },
+                },
+                'slide-out': {
+                    '0%': { transform: 'translateY(0%)' },
+                    '100%': { transform: 'translateY(100%)' },
+                }
+            },
+            variants: {
+                animation: ['responsive', 'motion-safe', 'motion-reduce'],
+            },
         },
         fontFamily: {
             sans: ['Lato', 'system-ui', 'sans-serif'],

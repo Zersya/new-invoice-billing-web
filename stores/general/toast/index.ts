@@ -5,6 +5,12 @@ export const useToast = defineStore('root', {
         toastMessage: '',
     }),
 
+    getters: {
+        getIsToastVisible(): boolean {
+            return this.isToastVisible
+        }
+    },
+
     actions: {
         setIsToastError(isToastError: boolean) {
             this.isToastError = isToastError

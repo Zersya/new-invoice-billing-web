@@ -1,9 +1,8 @@
 <template>
-  <FormMerchant :merchant="null" :modal="modal"/>
+  <FormMerchant/>
 
   <div
-      class="transition-all ease-in-out shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-transform -translate-x-full sm:translate-x-0"
-      aria-label="Sidebar">
+      class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-all ease-in-out -translate-x-full sm:translate-x-0">
     <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
       <div class="flex justify-between items-center mb-5">
         <a href="https://app.inving.co/" class="flex">
@@ -38,9 +37,10 @@
         </li>
         <li>
           <button @click="modal?.toggle()" type="button"
-                  class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  class="group w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <div class="flex">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                   class="group-hover:animate-spin-once">
                 <path fill="currentColor"
                       d="M12 17q.425 0 .713-.288T13 16v-3h3.025q.425 0 .7-.288T17 12q0-.425-.288-.713T16 11h-3V7.975q0-.425-.288-.7T12 7q-.425 0-.713.288T11 8v3H7.975q-.425 0-.7.288T7 12q0 .425.288.713T8 13h3v3.025q0 .425.288.7T12 17Zm0 5q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-10Zm0 8q3.325 0 5.663-2.337T20 12q0-3.325-2.337-5.663T12 4Q8.675 4 6.337 6.337T4 12q0 3.325 2.337 5.663T12 20Z"/>
               </svg>
@@ -79,6 +79,7 @@ import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
 import api from "~/api";
 import {navigateTo} from "#app";
+import FormMerchant from "~/components/FormMerchant.vue";
 
 const store = useFetchMerchant()
 const isLoadingSignout = ref(false)
@@ -91,6 +92,9 @@ onMounted(() => {
 
   const $modal = document.getElementById('form-modal-merchant')
   modal.value = new Modal($modal, {
+    backdrop: 'dynamic',
+    backdropClasses: 'animate-fade-in bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    closable: false,
     onHide: () => {
       useFormMerchant().reset()
     }

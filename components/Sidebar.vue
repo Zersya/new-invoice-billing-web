@@ -22,9 +22,9 @@
       </div>
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
-        <li v-for="merchant in store.listMerchant" :key="merchant.$id">
+        <li v-for="merchant in storeFetch.listMerchant" :key="merchant.$id">
           <button type="button" @click="selectMerchant(merchant)"
-                  class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
@@ -81,14 +81,17 @@ import api from "~/api";
 import {navigateTo} from "#app";
 import FormMerchant from "~/components/FormMerchant.vue";
 
-const store = useFetchMerchant()
+const storeFetch = useFetchMerchant()
+const storeForm = useFormMerchant()
 const isLoadingSignout = ref(false)
 
 let modal = ref<ModalInterface | null>(null)
 provide('modal-form-merchant', modal)
 
 onMounted(() => {
-  store.fetchMerchants()
+  storeFetch.fetchMerchants().then(() => {
+    storeFetch.listMerchant.length > 0 && storeFetch.setActiveMerchant(storeFetch.listMerchant[0], true)
+  })
 
   const $modal = document.getElementById('form-modal-merchant')
   modal.value = new Modal($modal, {
@@ -96,14 +99,14 @@ onMounted(() => {
     backdropClasses: 'animate-fade-in bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     closable: false,
     onHide: () => {
-      useFormMerchant().reset()
+      storeForm.reset()
     }
   })
 
 })
 
 function selectMerchant(merchant: Merchant) {
-  useFormMerchant().setMerchant(merchant)
+  storeForm.setMerchant(merchant)
 
   modal.value?.toggle()
 }

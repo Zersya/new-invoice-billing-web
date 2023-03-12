@@ -13,6 +13,7 @@ interface FormState {
     tax?: number
     merchantCode?: string
     isLoadingSubmit: boolean
+    isLoadingDelete: boolean
 
 }
 
@@ -27,6 +28,7 @@ export const useFormMerchant = defineStore('formMerchant', {
         tax: 0,
         merchantCode: '',
         isLoadingSubmit: false,
+        isLoadingDelete: false
     }),
     getters: {
         isFormValid(): boolean {
@@ -96,7 +98,7 @@ export const useFormMerchant = defineStore('formMerchant', {
                 return
             }
 
-            this.isLoadingSubmit = true
+            this.isLoadingDelete = true
 
             const config = useRuntimeConfig();
 
@@ -109,7 +111,7 @@ export const useFormMerchant = defineStore('formMerchant', {
                 }
 
             }).finally(() => {
-                this.isLoadingSubmit = false
+                this.isLoadingDelete = false
             })
         },
 

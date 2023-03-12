@@ -22,10 +22,25 @@ const props = defineProps({
   isLoading: {
     type: Boolean,
     default: false
+  },
+  outlined: {
+    type: Boolean,
+    default: false
+  },
+  class: {
+    type: String,
+    default: ''
+  },
+  isPrimaryButton: {
+    type: Boolean,
+    default: true
   }
 })
 
 const buttonClass = () => {
-  return props.disabled ? 'w-full text-white bg-gray-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-400' : 'w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800'
+  let outlined = props.outlined ? 'border border-gray-400 hover:bg-gray-200' : ''
+  let primary = props.isPrimaryButton && !props.outlined ? 'text-white bg-primary-400 hover:bg-primary-900 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800' : ''
+
+  return `${outlined} ${primary} ${props.class} w-full font-semibold rounded-lg text-sm px-5 py-2.5 text-center`
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div
-      v-show="toastStore.isToastVisible"
-      class="animate-slide-in flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow top-10 right-10 absolute dark:text-gray-400 dark:bg-gray-800"
+      id="toast"
+      class="hidden flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow top-10 right-10 absolute dark:text-gray-400 dark:bg-gray-800"
       role="alert">
     <div
         v-if="!toastStore.isToastError"
@@ -43,15 +43,30 @@
 <script setup lang="ts">
 
 import {useToast} from "~/stores/general/toast";
+import {onMounted} from "vue";
 
+let $toast: HTMLElement | null = null
 const toastStore = useToast()
 
+onMounted(() => {
+  $toast = document.getElementById('toast')
+})
 
 watch(() => toastStore.getIsToastVisible, (newValue) => {
   if (newValue) {
+    $toast?.classList.add('animate-fade-in')
+    $toast?.classList.remove('hidden')
+    $toast?.classList.remove('animate-fade-out')
+
     setTimeout(() => {
       toastStore.setIsToastVisible(false)
     }, 3000)
+  } else {
+    $toast?.classList.add('animate-fade-out')
+    $toast?.classList.remove('animate-fade-in')
+    setTimeout(() => {
+      $toast?.classList.add('hidden')
+    }, 300)
   }
 })
 

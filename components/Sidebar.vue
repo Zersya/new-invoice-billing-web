@@ -1,6 +1,5 @@
 <template>
-  <FormMerchant/>
-
+  <FormMerchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false" />
   <div
       class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-all ease-in-out -translate-x-full sm:translate-x-0">
     <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -23,20 +22,21 @@
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
         <li v-for="merchant in storeFetch.listMerchant" :key="merchant.$id">
-          <button type="button" @click="selectMerchant(merchant)"
-                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
+            <button type="button" @click="selectMerchant(merchant)"
+                    :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
             </span>
-            <span
-                class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
-                merchant.name
-              }}</span>
-          </button>
+              <span
+                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
+                  merchant.name
+                }}</span>
+            </button>
         </li>
         <li>
-          <button @click="modal?.toggle()" type="button"
+          <button type="button"
+                  @click="isModalFormMerchantOpen = true"
                   class="group w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <div class="flex">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -72,43 +72,29 @@
 <script setup lang="ts">
 import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 import {useFetchMerchant} from '~/stores/merchant';
-import {Modal} from "flowbite";
-import type {ModalInterface} from "flowbite";
 import {provide} from "#imports";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
 import api from "~/api";
 import {navigateTo} from "#app";
 import FormMerchant from "~/components/FormMerchant.vue";
+import {useModalFormMerchant} from "~/composables/states";
 
 const storeFetch = useFetchMerchant()
 const storeForm = useFormMerchant()
-const isLoadingSignout = ref(false)
 
-let modal = ref<ModalInterface | null>(null)
-provide('modal-form-merchant', modal)
+const isModalFormMerchantOpen = useModalFormMerchant()
+const isLoadingSignout = ref(false)
 
 onMounted(() => {
   storeFetch.fetchMerchants().then(() => {
     storeFetch.listMerchant.length > 0 && storeFetch.setActiveMerchant(storeFetch.listMerchant[0], true)
   })
-
-  const $modal = document.getElementById('form-modal-merchant')
-  modal.value = new Modal($modal, {
-    backdrop: 'dynamic',
-    backdropClasses: 'animate-fade-in bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    closable: false,
-    onHide: () => {
-      storeForm.reset()
-    }
-  })
-
 })
 
 function selectMerchant(merchant: Merchant) {
   storeForm.setMerchant(merchant)
-
-  modal.value?.toggle()
+  isModalFormMerchantOpen.value = true
 }
 
 function signOut() {

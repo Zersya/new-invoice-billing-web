@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Client} from "~/types/client";
+import {useFetchMerchant} from "~/stores/merchant";
 
 interface FormState {
     id?: string
@@ -22,7 +23,7 @@ export const useFormClient = defineStore('formClient', {
     }),
     getters: {
         isFormValid(): boolean {
-            return this.name !== '' && this.tags.length > 0
+            return this.name !== ''
         }
     },
     actions: {
@@ -79,12 +80,7 @@ export const useFormClient = defineStore('formClient', {
 
             await api.updateDocument(config.public.databaseID, '63fb7883dfeb4195d567', this.id, {
                 name: this.name,
-                description: this.description,
-                address: this.address,
-                phone_country_code: this.phoneCountry,
-                phone_number: this.phone,
-                tax: cvtTax,
-                client_code: this.clientCode,
+                tags: this.tags,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Client updated successfully')
             }).catch((reason) => {
@@ -106,26 +102,14 @@ export const useFormClient = defineStore('formClient', {
 
             this.isLoadingSubmit = true
 
-            let cvtTax: number = 0
-            try {
-                cvtTax = Number(this.tax) / 100
-            } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
-            }
-
-            const responseAccount = await api.getAccount()
+            const merchant = useFetchMerchant().activeMerchant
 
             const config = useRuntimeConfig();
 
             await api.createDocument(config.public.databaseID, '63fb7883dfeb4195d567', {
                 name: this.name,
-                description: this.description,
-                address: this.address,
-                phone_country_code: this.phoneCountry,
-                phone_number: this.phone,
-                tax: cvtTax,
-                client_code: this.clientCode,
-                owner_id: responseAccount.$id,
+                tags: this.tags,
+                merchant_id: merchant?.$id,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Client created successfully')
             }).catch((reason) => {

@@ -39,8 +39,9 @@ const props = defineProps({
 
 const buttonClass = () => {
   let outlined = props.outlined ? 'border border-gray-400 hover:bg-gray-200' : ''
-  let primary = props.isPrimaryButton && !props.outlined ? 'text-white bg-primary-400 hover:bg-primary-900 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800' : ''
+  let primary = props.isPrimaryButton && !props.outlined && !props.disabled ? 'text-white bg-primary-400 hover:bg-primary-900 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800' : ''
+  let disabled = props.disabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''
 
-  return `${outlined} ${primary} ${props.class} w-full font-semibold rounded-lg text-sm px-5 py-2.5 text-center`
+  return `${outlined} ${disabled} ${primary} ${props.class}  w-full font-semibold rounded-lg text-sm px-5 py-2.5 text-center`
 }
 </script>

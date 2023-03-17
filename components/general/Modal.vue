@@ -1,6 +1,6 @@
 <template>
   <slot name="trigger"/>
-  <div id="modal" tabindex="-1" aria-hidden="true"
+  <div :id="props.name" tabindex="-1" aria-hidden="true"
        class="fixed flex justify-center items-center top-0 left-0 right-0 z-50 hidden bg-black bg-opacity-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
     <div :class="modalSizeClass()">
       <div class=" relative bg-white rounded-lg shadow dark:bg-gray-700 p-10">
@@ -41,6 +41,10 @@ watch(() => props.isModalOpen, (value) => {
 const emit = defineEmits(['modal-opened', 'modal-closed'])
 
 const props = defineProps({
+  name: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     default: ''
@@ -58,7 +62,7 @@ const props = defineProps({
 let $modal: HTMLElement | null = null
 
 onMounted(() => {
-  $modal = document.getElementById('modal')
+  $modal = document.getElementById(props.name)
 })
 
 const openModal = (value: boolean) => {

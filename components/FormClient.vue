@@ -1,8 +1,9 @@
 <template>
-  <general-modal :is-modal-open="isModalFormClientOpen"
-         :extra-large="true"
-         :title="storeForm.id ? 'Edit merchant' : 'Add merchant'"
-         @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
+  <general-modal :is-modal-open="isModalOpen"
+                 :extra-large="true"
+                 name="form-client"
+                 :title="storeForm.id ? 'Edit client' : 'Add client'"
+                 @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
     <template #additional-action>
       <button v-if="storeForm.id"
               type="button"
@@ -25,12 +26,13 @@
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
             <input type="text" name="name" id="name"
                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                   placeholder="Type merchant name" required
+                   placeholder="Type client name" required
                    :value="storeForm.name"
                    @input="storeForm.setName($event.target.value)">
           </div>
         </div>
-        <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit" class="mt-4">
+        <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
+                        class="mt-4">
           {{ storeForm.id ? 'Update' : 'Create' }}
         </general-button>
       </form>
@@ -42,8 +44,6 @@
 import {initDropdowns} from "flowbite";
 import {useFormClient} from '~/stores/client/form';
 import {useFetchClient} from "~/stores/client";
-import Modal from "~/components/general/Modal.vue";
-import {useModalFormMerchant} from "~/composables/states";
 
 const storeForm = useFormClient()
 const storeFetch = useFetchClient()
@@ -51,8 +51,6 @@ const storeFetch = useFetchClient()
 onMounted(() => {
   initDropdowns()
 })
-
-const isModalFormClientOpen = useModalFormMerchant()
 
 const emit = defineEmits(['form-opened', 'form-closed'])
 
@@ -70,7 +68,7 @@ async function onSubmit() {
     await storeForm.onSubmitCreate()
   }
 
-  isModalFormClientOpen.value = false
+  emit('form-closed')
 
   await storeFetch.fetchClients()
 }
@@ -78,7 +76,7 @@ async function onSubmit() {
 async function onDelete() {
   await storeForm.onSubmitDelete()
 
-  isModalFormClientOpen.value = false
+  emit('form-closed')
 
   await storeFetch.fetchClients()
 }

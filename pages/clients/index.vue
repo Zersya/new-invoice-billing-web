@@ -1,4 +1,5 @@
 <template>
+  <form-client :is-modal-open="isModalFormClientOpen" @form-closed="isModalFormClientOpen = false"/>
   <div class="w-full">
     <div class="flex justify-between">
       <div class="pb-4 bg-white dark:bg-gray-900">
@@ -19,7 +20,7 @@
       </div>
 
       <div class="flex pb-4">
-        <general-button class="ml-4" label="Add Client" @click="">
+        <general-button class="ml-4" label="Add Client" @click="isModalFormClientOpen = true">
           <div class="flex">
             <svg class="w-5 h-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                  stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +78,7 @@
           </span>
         </td>
         <td class="px-6 py-4">
-          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+          <span @click="selectClient(client)" class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
         </td>
       </tr>
       </tbody>
@@ -88,8 +89,14 @@
 <script setup lang="ts">
 
 import {useFetchClient} from "~/stores/client";
+import {Merchant} from "~/types/merchant";
+import {Client} from "~/types/client";
+import {useFormClient} from "~/stores/client/form";
 
 const storeFetch = useFetchClient()
+const storeForm = useFormClient()
+
+const isModalFormClientOpen = ref(false)
 
 definePageMeta({
   title: "ClientsPage",
@@ -100,4 +107,9 @@ definePageMeta({
 onMounted(() => {
   storeFetch.fetchClients()
 })
+
+function selectClient(client: Client) {
+  storeForm.setClient(client)
+  isModalFormClientOpen.value = true
+}
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <FormMerchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false"/>
+  <form-merchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false"/>
   <div
       class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-all ease-in-out -translate-x-full sm:translate-x-0">
     <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -16,7 +16,7 @@
                   d="M16 17v-3H9v-4h7V7l5 5l-5 5M14 2a2 2 0 0 1 2 2v2h-2V4H5v16h9v-2h2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9Z"/>
           </svg>
 
-          <SpinnerLoading v-else class="inline" loading-color="fill-primary-200"/>
+          <general-spinner-loading v-else class="inline" loading-color="fill-primary-200"/>
         </button>
       </div>
       <div class="border-t border-gray-200 dark:border-gray-700"/>
@@ -84,20 +84,16 @@
 </template>
 
 <script setup lang="ts">
-import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 import {useFetchMerchant} from '~/stores/merchant';
-import {provide} from "#imports";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
 import api from "~/services/api";
 import {navigateTo} from "#app";
-import FormMerchant from "~/components/FormMerchant.vue";
-import {useModalFormMerchant} from "~/composables/states";
 
 const storeFetch = useFetchMerchant()
 const storeForm = useFormMerchant()
 
-const isModalFormMerchantOpen = useModalFormMerchant()
+const isModalFormMerchantOpen = ref(false)
 const isLoadingSignout = ref(false)
 
 onMounted(() => {

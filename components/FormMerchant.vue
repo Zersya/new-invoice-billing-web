@@ -1,8 +1,9 @@
 <template>
-  <general-modal :is-modal-open="isModalFormMerchantOpen"
-         :extra-large="true"
-         :title="storeForm.id ? 'Edit merchant' : 'Add merchant'"
-         @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
+  <general-modal :is-modal-open="isModalOpen"
+                 :extra-large="true"
+                 name="form-merchant"
+                 :title="storeForm.id ? 'Edit merchant' : 'Add merchant'"
+                 @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
     <template #additional-action>
       <button v-if="storeForm.id"
               type="button"
@@ -102,7 +103,8 @@
             </div>
           </div>
         </div>
-        <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit" class="mt-4">
+        <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
+                        class="mt-4">
           {{ storeForm.id ? 'Update' : 'Create' }}
         </general-button>
         <general-button v-if="storeForm.id" :outlined="true" type="button" class="mt-4" @click="setActiveMerchant">
@@ -110,17 +112,13 @@
         </general-button>
       </form>
     </template>
-  </Modal>
+  </general-modal>
 </template>
 
 <script setup lang="ts">
-import Button from "~/components/general/Button.vue"
-import SpinnerLoading from "~/components/general/SpinnerLoading.vue"
 import {Dropdown, initDropdowns} from "flowbite";
 import {useFormMerchant} from '~/stores/merchant/form';
 import {useFetchMerchant} from "~/stores/merchant";
-import Modal from "~/components/general/Modal.vue";
-import {useModalFormMerchant} from "~/composables/states";
 
 const storeForm = useFormMerchant()
 const storeFetch = useFetchMerchant()
@@ -128,8 +126,6 @@ const storeFetch = useFetchMerchant()
 onMounted(() => {
   initDropdowns()
 })
-
-const isModalFormMerchantOpen = useModalFormMerchant()
 
 const emit = defineEmits(['form-opened', 'form-closed'])
 
@@ -168,7 +164,7 @@ async function onSubmit() {
     await storeForm.onSubmitCreate()
   }
 
-  isModalFormMerchantOpen.value = false
+  emit('form-closed')
 
   await storeFetch.fetchMerchants()
 }
@@ -176,7 +172,7 @@ async function onSubmit() {
 async function onDelete() {
   await storeForm.onSubmitDelete()
 
-  isModalFormMerchantOpen.value = false
+  emit('form-closed')
 
   await storeFetch.fetchMerchants()
 }
@@ -187,7 +183,7 @@ function setActiveMerchant() {
   if (merchant) {
     storeFetch.setActiveMerchant(merchant)
 
-    isModalFormMerchantOpen.value = false
+    emit('form-closed')
   }
 }
 </script>

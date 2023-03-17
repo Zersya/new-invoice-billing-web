@@ -1,5 +1,5 @@
 <template>
-  <FormMerchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false" />
+  <FormMerchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false"/>
   <div
       class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-all ease-in-out -translate-x-full sm:translate-x-0">
     <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -22,17 +22,17 @@
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
         <li v-for="merchant in storeFetch.listMerchant" :key="merchant.$id">
-            <button type="button" @click="selectMerchant(merchant)"
-                    :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
+          <button type="button" @click="selectMerchant(merchant)"
+                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
             </span>
-              <span
-                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
-                  merchant.name
-                }}</span>
-            </button>
+            <span
+                class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">{{
+                merchant.name
+              }}</span>
+          </button>
         </li>
         <li>
           <button type="button"
@@ -64,6 +64,20 @@
             </div>
           </button>
         </li>
+        <li>
+          <nuxt-link type="button"
+                  to="/clients"
+                  class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                      d="M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9A3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42c-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3a3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3a3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.536 5.536 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13v-1.75M0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9c-.59.68-.95 1.62-.95 2.65V20H0m24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65c2.56.34 4.45 1.51 4.45 2.9V20Z"/>
+              </svg>
+              <span
+                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Clients</span>
+            </div>
+          </nuxt-link>
+        </li>
       </ul>
     </div>
   </div>
@@ -75,7 +89,7 @@ import {useFetchMerchant} from '~/stores/merchant';
 import {provide} from "#imports";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
-import api from "~/api";
+import api from "~/services/api";
 import {navigateTo} from "#app";
 import FormMerchant from "~/components/FormMerchant.vue";
 import {useModalFormMerchant} from "~/composables/states";

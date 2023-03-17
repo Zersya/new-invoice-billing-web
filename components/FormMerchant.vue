@@ -1,5 +1,5 @@
 <template>
-  <Modal :is-modal-open="isModalFormMerchantOpen"
+  <general-modal :is-modal-open="isModalFormMerchantOpen"
          :extra-large="true"
          :title="storeForm.id ? 'Edit merchant' : 'Add merchant'"
          @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
@@ -8,7 +8,7 @@
               type="button"
               class="text-red-400 bg-transparent hover:bg-red-200 hover:text-red-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-red-600 dark:hover:text-white"
               @click="onDelete">
-        <SpinnerLoading v-if="storeForm.isLoadingDelete" class="inline" loading-color="fill-primary-200"/>
+        <general-spinner-loading v-if="storeForm.isLoadingDelete" class="inline" loading-color="fill-primary-200"/>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <path fill="currentColor"
                 d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3H9M7 6h10v13H7V6m2 2v9h2V8H9m4 0v9h2V8h-2Z"/>
@@ -102,12 +102,12 @@
             </div>
           </div>
         </div>
-        <Button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit" class="mt-4">
+        <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit" class="mt-4">
           {{ storeForm.id ? 'Update' : 'Create' }}
-        </Button>
-        <Button v-if="storeForm.id" :outlined="true" type="button" class="mt-4" @click="setActiveMerchant">
+        </general-button>
+        <general-button v-if="storeForm.id" :outlined="true" type="button" class="mt-4" @click="setActiveMerchant">
           Set as Active Merchant
-        </Button>
+        </general-button>
       </form>
     </template>
   </Modal>
@@ -191,19 +191,3 @@ function setActiveMerchant() {
   }
 }
 </script>
-
-<style>
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateX(20px);
-  opacity: 0;
-}
-</style>

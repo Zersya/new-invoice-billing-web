@@ -1,8 +1,6 @@
 import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
-import api from "~/api";
-import {$ref} from "vue/macros";
-import {useRoot} from "~/stores";
+import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 
 export const useRegister = defineStore('register', {

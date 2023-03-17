@@ -1,4 +1,4 @@
-import api from "~/api";
+import api from "~/services/api";
 import {navigateTo} from "#app";
 import {AppwriteException} from "appwrite";
 import {process} from "unenv/runtime/node/process/_process";

@@ -4,7 +4,9 @@
 
     <div class="flex">
       <Sidebar/>
-      <slot />
+      <div class="p-4 w-full">
+        <slot />
+      </div>
     </div>
   </ClientOnly>
 </template>

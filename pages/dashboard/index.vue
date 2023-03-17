@@ -1,15 +1,14 @@
 <template>
   <div class="flex-col w-full m-4">
     <h1>Hello Dashboard</h1>
-    <Button :is-loading="isLoading" @click="signOut">Signout</Button>
+    <general-button :is-loading="isLoading" @click="signOut">Signout</general-button>
     <a class="mt-4" href="/login">Login</a>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import Button from "~/components/general/Button.vue";
-import api from "~/api";
+import api from "~/services/api";
 
 definePageMeta({
   title: "DashboardPage",

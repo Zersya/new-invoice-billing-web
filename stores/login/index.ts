@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
-import api from "~/api";
+import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 
 export const useLogin = defineStore('login', {

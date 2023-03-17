@@ -1,8 +1,7 @@
 import {defineStore} from 'pinia'
-import api from "~/api";
+import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
-import {Merchant} from '@/types/merchant';
-import {Root} from '@/types';
+import {Merchant} from '~/types/merchant';
 
 interface MerchantState {
     listMerchant: Merchant[]

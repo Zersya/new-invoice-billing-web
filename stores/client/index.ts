@@ -15,7 +15,7 @@ export const useFetchClient = defineStore('fetchClient', {
         isLoadingFetch: false,
     }),
     actions: {
-        async fetchClients() {
+        async fetchClients(searchKey?: string) {
             this.isLoadingFetch = true
 
             const merchant = await useFetchMerchant().activeMerchant
@@ -28,9 +28,15 @@ export const useFetchClient = defineStore('fetchClient', {
 
             const config = useRuntimeConfig();
 
-            await api.listDocuments(config.public.databaseID, '63fb7883dfeb4195d567', [
+            const queries = [
                 Query.equal('merchant_id', merchantId),
-            ])
+            ]
+
+            if (searchKey) {
+                queries.push(Query.search('name', searchKey))
+            }
+
+            await api.listDocuments(config.public.databaseID, '63fb7883dfeb4195d567', queries)
                 .then((response) => {
                     this.listClient = response.documents as Client[]
                 }).catch((reason) => {

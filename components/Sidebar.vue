@@ -1,8 +1,8 @@
 <template>
   <form-merchant :is-modal-open="isModalFormMerchantOpen" @form-closed="isModalFormMerchantOpen = false"/>
   <div
-      class="shadow-xl top-0 left-0 z-40 w-16 h-screen hover:w-96 transition-all ease-in-out -translate-x-full sm:translate-x-0">
-    <div class="px-3 py-4 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      :class="[`shadow-xl top-0 z-40 left-0 w-16 h-screen transition-all ease-in-out -translate-x-full sm:translate-x-0 hover:w-96`, `${isSidebarOpen ? 'w-96': ''}`]">
+    <div class="px-3 py-4 h-full overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
       <div class="flex justify-between items-center mb-5">
         <a href="https://app.inving.co/" class="flex">
           <img class="w-10" src="/logo-inving.png" alt="Inving Logo"/>
@@ -21,6 +21,23 @@
       </div>
       <div class="border-t border-gray-200 dark:border-gray-700"/>
       <ul class="space-y-2">
+        <li>
+          <nuxt-link type="button"
+                     to="/dashboard"
+                     class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path
+                    fill="currentColor"
+                    d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3v10Z"/>
+              </svg>
+              <span
+                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
+            </div>
+          </nuxt-link>
+        </li>
+        <div class="border-t border-gray-200 dark:border-gray-700"/>
+
         <li v-for="merchant in storeFetch.listMerchant" :key="merchant.$id">
           <button type="button" @click="selectMerchant(merchant)"
                   :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
@@ -51,23 +68,9 @@
       </ul>
       <ul class="space-y-2 border-t border-gray-200 dark:border-gray-700">
         <li>
-          <button type="button"
-                  class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-            <div class="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path
-                    fill="currentColor"
-                    d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3v10Z"/>
-              </svg>
-              <span
-                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Dashboard</span>
-            </div>
-          </button>
-        </li>
-        <li>
           <nuxt-link type="button"
-                  to="/clients"
-                  class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                     to="/clients"
+                     class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -78,7 +81,46 @@
             </div>
           </nuxt-link>
         </li>
+        <li>
+          <nuxt-link type="button"
+                     to="/invoices"
+                     class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                  <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                  <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2zM9 7h1m-1 6h6m-2 4h2"/>
+                </g>
+              </svg>
+              <span
+                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Invoices</span>
+            </div>
+          </nuxt-link>
+        </li>
       </ul>
+      <div :class="[`flex justify-end transition-all ease-in-out`]">
+        <div class="flex fixed bottom-1 items-center mb-2">
+          <span :class="`text-sm font-semibold text-gray-800 self-center ${isSidebarOpen ? 'hidden': 'mr-3'}`">Keep Open</span>
+          <button type="button" :class="['p-2 bg-white shadow-inner']"
+                  @click="toggleSidebar">
+
+            <svg v-if="!isSidebarOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm5-2v16"/>
+                <path d="m14 10l2 2l-2 2"/>
+              </g>
+            </svg>
+
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm5-2v16"/>
+                <path d="m15 10l-2 2l2 2"/>
+              </g>
+            </svg>
+
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +137,7 @@ const storeForm = useFormMerchant()
 
 const isModalFormMerchantOpen = ref(false)
 const isLoadingSignout = ref(false)
+const isSidebarOpen = ref(false)
 
 onMounted(() => {
   storeFetch.fetchMerchants().then(() => {
@@ -113,6 +156,10 @@ function signOut() {
     isLoadingSignout.value = false
     navigateTo('/login')
   })
+}
+
+function toggleSidebar() {
+  isSidebarOpen.value = !isSidebarOpen.value
 }
 
 </script>

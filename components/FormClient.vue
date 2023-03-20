@@ -30,6 +30,15 @@
                    :value="storeForm.name"
                    @input="storeForm.setName($event.target.value)">
           </div>
+          <div>
+            <label for="email"
+                   class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" name="email" id="email"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                   placeholder="Type client email" required
+                   :value="storeForm.email"
+                   @input="storeForm.setEmail($event.target.value)">
+          </div>
         </div>
         <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
                         class="mt-4">

@@ -46,6 +46,9 @@
           Name
         </th>
         <th scope="col" class="px-6 py-3">
+          Email
+        </th>
+        <th scope="col" class="px-6 py-3">
           Tags
         </th>
         <th scope="col" class="px-6 py-3">
@@ -70,6 +73,9 @@
           {{ client.name }}
         </th>
         <td class="px-6 py-4">
+          {{ client.email }}
+        </td>
+        <td class="px-6 py-4">
           {{ client.tags.join(', ') }}
         </td>
         <td class="px-6 py-4">
@@ -90,7 +96,6 @@
 <script setup lang="ts">
 
 import {useFetchClient} from "~/stores/client";
-import {Merchant} from "~/types/merchant";
 import {Client} from "~/types/client";
 import {useFormClient} from "~/stores/client/form";
 

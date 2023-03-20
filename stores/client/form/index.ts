@@ -7,6 +7,7 @@ import {useFetchMerchant} from "~/stores/merchant";
 interface FormState {
     id?: string
     name: string
+    email: string
     tags: string[]
     isLoadingSubmit: boolean
     isLoadingDelete: boolean
@@ -17,23 +18,29 @@ export const useFormClient = defineStore('formClient', {
     state: (): FormState => ({
         id: '',
         name: '',
+        email: '',
         tags: [],
         isLoadingSubmit: false,
         isLoadingDelete: false
     }),
     getters: {
         isFormValid(): boolean {
-            return this.name !== ''
+            return this.name !== '' && this.email !== ''
         }
     },
     actions: {
         setClient(client: Client) {
             this.id = client.$id
             this.name = client.name
+            this.email = client.email
             this.tags = client.tags
         },
         setName(name: string) {
             this.name = name
+        },
+
+        setEmail(email: string) {
+            this.email = email
         },
 
         setTags(tags: string[]) {
@@ -43,6 +50,7 @@ export const useFormClient = defineStore('formClient', {
         reset() {
             this.id = ''
             this.name = ''
+            this.email = ''
             this.tags = []
             this.isLoadingSubmit = false
         },
@@ -80,6 +88,7 @@ export const useFormClient = defineStore('formClient', {
 
             await api.updateDocument(config.public.databaseID, '63fb7883dfeb4195d567', this.id, {
                 name: this.name,
+                email: this.email,
                 tags: this.tags,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Client updated successfully')
@@ -108,6 +117,7 @@ export const useFormClient = defineStore('formClient', {
 
             await api.createDocument(config.public.databaseID, '63fb7883dfeb4195d567', {
                 name: this.name,
+                email: this.email,
                 tags: this.tags,
                 merchant_id: merchant?.$id,
             }).then((_) => {

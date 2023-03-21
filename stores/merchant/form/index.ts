@@ -12,6 +12,7 @@ interface FormState {
     phone?: string
     tax?: number
     merchantCode?: string
+    invoiceNumber: number
     isLoadingSubmit: boolean
     isLoadingDelete: boolean
 
@@ -27,6 +28,7 @@ export const useFormMerchant = defineStore('formMerchant', {
         phone: '',
         tax: 0,
         merchantCode: '',
+        invoiceNumber: 0,
         isLoadingSubmit: false,
         isLoadingDelete: false
     }),
@@ -81,6 +83,10 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.merchantCode = code
         },
 
+        setInvoiceNumber(invoiceNumber: number) {
+            this.invoiceNumber = invoiceNumber
+        },
+
         reset() {
             this.id = ''
             this.name = ''
@@ -90,6 +96,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.phone = ''
             this.tax = 0
             this.merchantCode = ''
+            this.invoiceNumber = 0
             this.isLoadingSubmit = false
         },
 
@@ -180,6 +187,7 @@ export const useFormMerchant = defineStore('formMerchant', {
                 tax: cvtTax,
                 merchant_code: this.merchantCode,
                 owner_id: responseAccount.$id,
+                latest_invoice_number: this.invoiceNumber
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Merchant created successfully')
             }).catch((reason) => {

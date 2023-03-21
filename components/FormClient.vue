@@ -50,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import {initDropdowns} from "flowbite";
 import {useFormClient} from '~/stores/client/form';
 import {useFetchClient} from "~/stores/client";
 
@@ -58,7 +57,6 @@ const storeForm = useFormClient()
 const storeFetch = useFetchClient()
 
 onMounted(() => {
-  initDropdowns()
 })
 
 const emit = defineEmits(['form-opened', 'form-closed'])

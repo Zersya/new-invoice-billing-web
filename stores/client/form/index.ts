@@ -4,7 +4,7 @@ import {AppwriteException} from "appwrite";
 import {Client} from "~/types/client";
 import {useFetchMerchant} from "~/stores/merchant";
 
-interface FormState {
+interface FormClientState {
     id?: string
     name: string
     email: string
@@ -15,7 +15,7 @@ interface FormState {
 }
 
 export const useFormClient = defineStore('formClient', {
-    state: (): FormState => ({
+    state: (): FormClientState => ({
         id: '',
         name: '',
         email: '',

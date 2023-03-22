@@ -35,12 +35,12 @@
           <div>
             <label for="client"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Client</label>
-            <div class="flex">
+            <div>
               <button id="client-btn" data-dropdown-toggle="dropdown-client"
                       class="flex-shrink-0 z-10 inline-flex w-full py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
                       type="button">
                 <div class="flex w-full">
-                  {{ storeForm?.client?.name }}
+                  {{ storeForm?.client?.name ?? 'Please select client' }}
                 </div>
                 <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"
                      xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +50,7 @@
                 </svg>
               </button>
               <div id="dropdown-client"
-                   class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                   class="z-10 w-48 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="phone-country-btn">
                   <li v-for="client in storeClients.listClient" :key="client.$id">
                     <button type="button"
@@ -80,7 +80,6 @@ import {useFormInvoice} from '~/stores/invoice/form';
 import {useFetchInvoice} from "~/stores/invoice";
 import {useFetchMerchant} from "~/stores/merchant";
 import {useFetchClient} from "~/stores/client";
-import {Ref} from "vue";
 import {Client} from "~/types/client";
 
 const storeForm = useFormInvoice()

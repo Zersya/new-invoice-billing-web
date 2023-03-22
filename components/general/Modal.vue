@@ -4,6 +4,7 @@
        class="fixed flex justify-center items-center top-0 left-0 right-0 z-50 hidden bg-black bg-opacity-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
     <div :class="modalSizeClass()">
       <div class=" relative bg-white rounded-lg shadow dark:bg-gray-700 p-10">
+        <slot name="caption"/>
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-x-2">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">

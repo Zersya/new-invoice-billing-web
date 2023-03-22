@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.7",
+    "@vuepic/vue-datepicker": "^4.2.2",
     "appwrite": "^10.2.0",
     "flowbite": "^1.6.3"
   }

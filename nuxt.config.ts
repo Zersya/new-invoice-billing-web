@@ -4,6 +4,9 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@nuxtjs/tailwindcss',
     ],
+    build: {
+        transpile: ['@vuepic/vue-datepicker']
+    },
     runtimeConfig: {
         public: {
             // @ts-ignore

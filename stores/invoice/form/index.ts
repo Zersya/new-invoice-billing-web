@@ -9,6 +9,7 @@ import {useFormMerchant} from "~/stores/merchant/form";
 interface FormInvoiceState {
     id?: string
     number: string
+    due_date: Date | null
     client_id: string
     merchant_id: string
     client: Client | null
@@ -21,6 +22,7 @@ export const useFormInvoice = defineStore('formInvoice', {
     state: (): FormInvoiceState => ({
         id: '',
         number: '',
+        due_date: null,
         client_id: '',
         merchant_id: '',
         client: null,
@@ -29,7 +31,7 @@ export const useFormInvoice = defineStore('formInvoice', {
     }),
     getters: {
         isFormValid(): boolean {
-            return this.number !== '' && this.client_id !== ''
+            return this.number !== '' && this.client_id !== '' && this.merchant_id !== '' && this.due_date !== null
         }
     },
     actions: {
@@ -46,6 +48,10 @@ export const useFormInvoice = defineStore('formInvoice', {
             const num = number?.toString().padStart(4, '0')
 
             this.number = `INV-${year}-${month}-${num}`
+        },
+
+        setDueDate(due_date: Date) {
+            this.due_date = due_date
         },
 
         setClient(client: Client | null) {
@@ -120,8 +126,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             }
 
             this.isLoadingSubmit = true
-
-            const merchant = useFetchMerchant().activeMerchant
+            const dateNow = new Date()
 
             const config = useRuntimeConfig();
 
@@ -129,17 +134,20 @@ export const useFormInvoice = defineStore('formInvoice', {
                 number: this.number,
                 client_id: this.client_id,
                 client_name: this.client?.name,
-                merchant_id: merchant?.$id,
+                merchant_id: this.merchant_id,
+                issued_date: dateNow,
+                due_date: this.due_date,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Invoice created successfully')
 
+                const merchant = useFetchMerchant().activeMerchant
                 if (merchant) {
                     merchant.latest_invoice_number += 1
                     api.updateDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', merchant?.$id, {
                         latest_invoice_number: merchant.latest_invoice_number
                     })
 
-                    useFetchMerchant().setActiveMerchant(merchant)
+                    useFetchMerchant().setActiveMerchant(merchant, true)
                     this.setNumber(merchant.latest_invoice_number)
                 }
 

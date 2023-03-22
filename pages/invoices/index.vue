@@ -79,8 +79,6 @@
 </template>
 
 <script setup lang="ts">
-
-
 import {useFetchInvoice} from "~/stores/invoice";
 import {useFormInvoice} from "~/stores/invoice/form";
 import {Invoice} from "~/types/invoice";
@@ -101,6 +99,7 @@ definePageMeta({
 onMounted(() => {
   storeFetch.fetchInvoices()
 })
+
 
 function selectInvoice(invoice: Invoice) {
   storeForm.setInvoice(invoice)

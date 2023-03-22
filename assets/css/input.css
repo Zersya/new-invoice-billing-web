@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-
     .ease-out-overlay-enter-active,
     .ease-out-overlay-leave-active {
         @apply opacity-100 duration-300;

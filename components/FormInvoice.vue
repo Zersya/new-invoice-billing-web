@@ -5,6 +5,9 @@
                  :title="storeForm.id ? 'Edit invoice' : 'Add invoice'"
                  @modal-opened="$emit('form-opened'); onModalOpened()"
                  @modal-closed="$emit('form-closed'); storeForm.reset()">
+    <template #caption>
+      <h4 class="text-sm text-gray-500 mb-1">{{ activeMerchantName }}</h4>
+    </template>
     <template #additional-action>
       <button v-if="storeForm.id"
               type="button"
@@ -64,6 +67,11 @@
               </div>
             </div>
           </div>
+          <div>
+            <label for="client"
+                   class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
+            <vue-date-picker v-model="dueDate"/>
+          </div>
         </div>
         <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
                         class="mt-4">
@@ -81,10 +89,23 @@ import {useFetchInvoice} from "~/stores/invoice";
 import {useFetchMerchant} from "~/stores/merchant";
 import {useFetchClient} from "~/stores/client";
 import {Client} from "~/types/client";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+
 
 const storeForm = useFormInvoice()
 const storeFetch = useFetchInvoice()
 const storeClients = useFetchClient()
+
+const dueDate = computed({
+  get(): any {
+    return storeForm.due_date
+  },
+  set(value: Date) {
+    storeForm.setDueDate(value)
+  }
+})
+
 
 onMounted(() => {
   initDropdowns()
@@ -102,6 +123,10 @@ const props = defineProps({
 })
 
 
+const activeMerchantName = computed(() => {
+  return useFetchMerchant().activeMerchant?.name
+})
+
 const setClient = (client: Client) => {
   storeForm.setClient(client)
 
@@ -115,7 +140,9 @@ const setClient = (client: Client) => {
 }
 
 const onModalOpened = () => {
-  const latestInvoiceNumber = useFetchMerchant().activeMerchant?.latest_invoice_number
+  const merchant = useFetchMerchant().activeMerchant
+  const latestInvoiceNumber = merchant?.latest_invoice_number
+  storeForm.setMerchantId(merchant?.$id ?? '')
   storeForm.setNumber(latestInvoiceNumber)
   storeForm.setClient(null)
 }

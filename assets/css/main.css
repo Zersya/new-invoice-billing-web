@@ -1,3 +1,7 @@
+:root {
+    --color-primary: #ea580c;
+}
+
 .required-field::after {
     content: " *";
     color: #ff0000;
@@ -9,3 +13,14 @@
     right: 0;
 }
 
+.dp__select {
+    color: var(--color-primary) !important;
+}
+
+.dp__today {
+    border: 1px solid var(--color-primary) !important;
+}
+
+.dp__active_date {
+    background-color: var(--color-primary) !important;
+}

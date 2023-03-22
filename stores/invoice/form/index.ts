@@ -38,6 +38,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         setInvoice(invoice: Invoice) {
             this.id = invoice.$id
             this.number = invoice.number
+            this.due_date = invoice.due_date
             this.client_id = invoice.client_id
             this.merchant_id = invoice.merchant_id
         },
@@ -68,6 +69,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.number = ''
             this.client_id = ''
             this.merchant_id = ''
+            this.due_date = null
             this.isLoadingSubmit = false
         },
 
@@ -104,6 +106,7 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             await api.updateDocument(config.public.databaseID, '6418753f5e769294335b', this.id, {
                 number: this.number,
+                due_date: this.due_date,
                 client_id: this.client_id,
                 client_name: this.client?.name,
             }).then((_) => {

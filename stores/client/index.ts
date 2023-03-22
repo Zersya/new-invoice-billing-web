@@ -15,6 +15,29 @@ export const useFetchClient = defineStore('fetchClient', {
         isLoadingFetch: false,
     }),
     actions: {
+        async fetchClientById(id: string): Promise<Client | null> {
+
+            const merchant = await useFetchMerchant().activeMerchant
+            const merchantId = merchant?.$id
+
+            if (!merchantId) {
+                useNuxtApp().$toast.showError('Merchant not found')
+                return
+            }
+
+            const config = useRuntimeConfig();
+
+            try {
+                const doc = await api.getDocument(config.public.databaseID, '63fb7883dfeb4195d567', id);
+                return doc as Client
+            } catch (reason) {
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+
+                return null
+            }
+        },
         async fetchClients(searchKey?: string) {
             this.isLoadingFetch = true
 

@@ -21,7 +21,8 @@
       </div>
 
       <div class="flex pb-4">
-        <general-button class="ml-4" label="Add Invoice" @click="isModalFormInvoiceOpen = true">
+        <general-button class="ml-4" label="Add Invoice"
+                        @click="isModalFormInvoiceOpen = true">
           <div class="flex">
             <svg class="w-5 h-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                  stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +71,8 @@
           {{ invoice.client_name }}
         </td>
         <td class="px-6 py-4">
-          <span @click="selectInvoice(invoice)" class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
+          <span @click="selectInvoice(invoice)"
+                class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
         </td>
       </tr>
       </tbody>
@@ -82,6 +84,7 @@
 import {useFetchInvoice} from "~/stores/invoice";
 import {useFormInvoice} from "~/stores/invoice/form";
 import {Invoice} from "~/types/invoice";
+import {useFetchClient} from "~/stores/client";
 
 const storeFetch = useFetchInvoice()
 const storeForm = useFormInvoice()
@@ -101,8 +104,11 @@ onMounted(() => {
 })
 
 
-function selectInvoice(invoice: Invoice) {
+async function selectInvoice(invoice: Invoice) {
   storeForm.setInvoice(invoice)
+
+  const client = await useFetchClient().fetchClientById(invoice.client_id)
+  storeForm.setClient(client)
   isModalFormInvoiceOpen.value = true
 }
 

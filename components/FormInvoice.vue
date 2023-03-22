@@ -70,7 +70,7 @@
           <div>
             <label for="client"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
-            <vue-date-picker v-model="dueDate"/>
+            <vue-date-picker v-model="storeForm.due_date" format="dd/MM/yyyy" @change="storeForm.setDueDate($event)" />
           </div>
         </div>
         <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
@@ -96,16 +96,6 @@ import '@vuepic/vue-datepicker/dist/main.css'
 const storeForm = useFormInvoice()
 const storeFetch = useFetchInvoice()
 const storeClients = useFetchClient()
-
-const dueDate = computed({
-  get(): any {
-    return storeForm.due_date
-  },
-  set(value: Date) {
-    storeForm.setDueDate(value)
-  }
-})
-
 
 onMounted(() => {
   initDropdowns()
@@ -144,7 +134,10 @@ const onModalOpened = () => {
   const latestInvoiceNumber = merchant?.latest_invoice_number
   storeForm.setMerchantId(merchant?.$id ?? '')
   storeForm.setNumber(latestInvoiceNumber)
-  storeForm.setClient(null)
+
+  if (!storeForm.id) {
+    storeForm.setClient(null)
+  }
 }
 
 async function onSubmit() {

@@ -18,6 +18,7 @@ export interface InvoiceItem {
     name: string
     quantity: number
     subtotal: number
+    price: number
     $id: string
     $createdAt: string
     $updatedAt: string

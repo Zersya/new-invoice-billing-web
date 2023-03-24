@@ -105,14 +105,16 @@
                 <div class="flex">
                   <input type="text" id="name" aria-describedby="helper-text-explanation"
                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                         placeholder="name of item" @input="storeForm.setItemName(index, $event.target.value)"/>
+                         placeholder="name of item" :value="item.name"
+                         @input="storeForm.setItemName(index, $event.target.value)"/>
                 </div>
               </td>
               <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                 <select id="rates_type" :value="item.rates_type"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                  <option>Fixed</option>
-                  <option>Hourly</option>
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        @change="storeForm.setRatesType(index, $event.target.value)">
+                  <option value="fixed">Fixed</option>
+                  <option value="hourly">Hourly</option>
                 </select>
               </td>
               <td class="px-6 py-4">
@@ -150,7 +152,8 @@
               <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                 <input type="number"
                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                       placeholder="price of item" @input="storeForm.setItemPrice(index, $event.target.value)"/>
+                       placeholder="price of item" :value="item.price"
+                       @input="storeForm.setItemPrice(index, $event.target.value)"/>
               </td>
               <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                 {{ item.subtotal }}
@@ -168,7 +171,7 @@
                     class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-primary border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
                     @click="storeForm.addItem({
                       name: '',
-                      rates_type: 'Fixed',
+                      rates_type: 'fixed',
                       price: 0,
                       quantity: 0,
                       subtotal: 0
@@ -251,6 +254,22 @@ const onModalOpened = () => {
 
   if (!storeForm.id) {
     storeForm.setClient(null)
+  } else {
+    storeFetch.fetchInvoiceItems(storeForm.id).then(() => {
+      for (const item of storeFetch.listInvoiceItem) {
+
+        storeForm.addItem({
+          id: item.$id,
+          name: item.name,
+          rates_type: item.rates_type,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.subtotal
+        })
+      }
+    })
+
+
   }
 }
 

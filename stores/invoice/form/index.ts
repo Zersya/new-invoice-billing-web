@@ -7,6 +7,7 @@ import {Client} from "~/types/client";
 import {useFormMerchant} from "~/stores/merchant/form";
 
 interface InvoiceItemField {
+    id?: string
     name: string,
     quantity: number,
     price: number,
@@ -53,6 +54,9 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
         setItemName(index: number, name: string) {
             this.items[index].name = name
+        },
+        setRatesType(index: number, rates_type: string) {
+            this.items[index].rates_type = rates_type
         },
         setItemPrice(index: number, price: number) {
             this.items[index].price = price
@@ -104,6 +108,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.merchant_id = ''
             this.due_date = null
             this.isLoadingSubmit = false
+            this.items = []
         },
 
         async onSubmitDelete() {
@@ -142,8 +147,12 @@ export const useFormInvoice = defineStore('formInvoice', {
                 due_date: this.due_date,
                 client_id: this.client_id,
                 client_name: this.client?.name,
-            }).then((_) => {
+            }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice updated successfully')
+
+                for (const item of this.items) {
+                    await this.updateInvoiceItem(item, doc.$id)
+                }
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
@@ -173,13 +182,13 @@ export const useFormInvoice = defineStore('formInvoice', {
                 merchant_id: this.merchant_id,
                 issued_date: dateNow,
                 due_date: this.due_date,
-            }).then((_) => {
+            }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice created successfully')
 
                 const merchant = useFetchMerchant().activeMerchant
                 if (merchant) {
                     merchant.latest_invoice_number += 1
-                    api.updateDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', merchant?.$id, {
+                    await api.updateDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', merchant?.$id, {
                         latest_invoice_number: merchant.latest_invoice_number
                     })
 
@@ -188,7 +197,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 }
 
                 for (const item of this.items) {
-                    this.submitInvoiceItem(item, _.$id)
+                    await this.submitInvoiceItem(item, doc.$id)
                 }
 
             }).catch((reason) => {
@@ -202,10 +211,10 @@ export const useFormInvoice = defineStore('formInvoice', {
             })
         },
 
-        submitInvoiceItem(item: InvoiceItemField, invoice_id: string) {
+        async submitInvoiceItem(item: InvoiceItemField, invoice_id: string) {
             const config = useRuntimeConfig();
 
-            api.createDocument(config.public.databaseID, '641af3a7562c2d9f717c', {
+            await api.createDocument(config.public.databaseID, '641af3a7562c2d9f717c', {
                 invoice_id: invoice_id,
                 name: item.name,
                 rates_type: item.rates_type,
@@ -220,7 +229,28 @@ export const useFormInvoice = defineStore('formInvoice', {
                     useNuxtApp().$toast.showError(reason.message)
                 }
             })
-        }
+        },
 
+        async updateInvoiceItem(item: InvoiceItemField, invoice_id: string) {
+            if (!item.id) return
+
+            const config = useRuntimeConfig();
+
+            await api.updateDocument(config.public.databaseID, '641af3a7562c2d9f717c', item.id, {
+                invoice_id: invoice_id,
+                name: item.name,
+                rates_type: item.rates_type,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.subtotal,
+            }).then((_) => {
+                useNuxtApp().$toast.showSuccess('Invoice item updated successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+            })
+        }
     }
 })

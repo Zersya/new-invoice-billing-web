@@ -120,8 +120,13 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             const config = useRuntimeConfig();
 
-            await api.deleteDocument(config.public.databaseID, '6418753f5e769294335b', this.id).then((_) => {
+            await api.deleteDocument(config.public.databaseID, '6418753f5e769294335b', this.id).then(async (_) => {
                 useNuxtApp().$toast.showSuccess('Invoice deleted successfully')
+
+                for (const item of this.items) {
+                    await this.deleteInvoiceItem(item)
+                }
+
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
@@ -245,6 +250,21 @@ export const useFormInvoice = defineStore('formInvoice', {
                 subtotal: item.subtotal,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Invoice item updated successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+            })
+        },
+
+        async deleteInvoiceItem(item: InvoiceItemField) {
+            if (!item.id) return
+
+            const config = useRuntimeConfig();
+
+            await api.deleteDocument(config.public.databaseID, '641af3a7562c2d9f717c', item.id).then((_) => {
+                useNuxtApp().$toast.showSuccess('Invoice item deleted successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {

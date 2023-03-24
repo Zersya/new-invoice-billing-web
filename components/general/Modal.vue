@@ -2,7 +2,7 @@
   <slot name="trigger"/>
   <div :id="props.name" tabindex="-1" aria-hidden="true"
        class="fixed flex justify-center items-center top-0 left-0 right-0 z-50 hidden bg-black bg-opacity-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-    <div :class="modalSizeClass()">
+    <div :class="['relative justify-center items-center w-full h-full md:h-auto', `${props.extraLarge ? 'max-w-2xl' : 'max-w-lg'}`, className]">
       <div class=" relative bg-white rounded-lg shadow dark:bg-gray-700 p-10">
         <slot name="caption"/>
         <div class="flex items-start justify-between mb-4">
@@ -57,6 +57,10 @@ const props = defineProps({
   isModalOpen: {
     type: Boolean,
     required: true
+  },
+  className: {
+    type: String,
+    default: ''
   }
 })
 
@@ -85,11 +89,5 @@ const openModal = (value: boolean) => {
       emit('modal-closed')
     }, 300)
   }
-}
-
-const modalSizeClass = () => {
-  let modalSize = props.extraLarge ? 'relative justify-center items-center w-full h-full max-w-2xl md:h-auto' : 'relative justify-center items-center w-full h-full max-w-lg md:h-auto'
-
-  return `${modalSize}`
 }
 </script>

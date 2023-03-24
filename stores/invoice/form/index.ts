@@ -1,10 +1,18 @@
 import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
-import {Invoice} from "~/types/invoice";
+import {Invoice, InvoiceItem} from "~/types/invoice";
 import {useFetchMerchant} from "~/stores/merchant";
 import {Client} from "~/types/client";
 import {useFormMerchant} from "~/stores/merchant/form";
+
+interface InvoiceItemField {
+    name: string,
+    quantity: number,
+    price: number,
+    subtotal: number,
+    rates_type: string
+}
 
 interface FormInvoiceState {
     id?: string
@@ -13,6 +21,7 @@ interface FormInvoiceState {
     client_id: string
     merchant_id: string
     client: Client | null
+    items: InvoiceItemField[]
     isLoadingSubmit: boolean
     isLoadingDelete: boolean
 
@@ -26,15 +35,39 @@ export const useFormInvoice = defineStore('formInvoice', {
         client_id: '',
         merchant_id: '',
         client: null,
+        items: [],
         isLoadingSubmit: false,
         isLoadingDelete: false
     }),
     getters: {
         isFormValid(): boolean {
-            return this.number !== '' && this.client_id !== '' && this.merchant_id !== '' && this.due_date !== null
+            return this.number !== '' && this.client_id !== '' && this.merchant_id !== '' && this.due_date !== null && this.items.length !== 0
         }
     },
     actions: {
+        addItem(item: InvoiceItemField) {
+            this.items.push(item)
+        },
+        removeItem(index: number) {
+            this.items.splice(index, 1)
+        },
+        setItemName(index: number, name: string) {
+            this.items[index].name = name
+        },
+        setItemPrice(index: number, price: number) {
+            this.items[index].price = price
+            this.items[index].subtotal = this.items[index].quantity * price
+        },
+        increaseItemQuantity(index: number) {
+            this.items[index].quantity++
+            this.items[index].subtotal = this.items[index].quantity * this.items[index].price
+        },
+        decreaseItemQuantity(index: number) {
+            if (this.items[index].quantity > 1) {
+                this.items[index].quantity--
+                this.items[index].subtotal = this.items[index].quantity * this.items[index].price
+            }
+        },
         setInvoice(invoice: Invoice) {
             this.id = invoice.$id
             this.number = invoice.number
@@ -154,6 +187,10 @@ export const useFormInvoice = defineStore('formInvoice', {
                     this.setNumber(merchant.latest_invoice_number)
                 }
 
+                for (const item of this.items) {
+                    this.submitInvoiceItem(item, _.$id)
+                }
+
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
@@ -164,6 +201,26 @@ export const useFormInvoice = defineStore('formInvoice', {
                 this.isLoadingSubmit = false
             })
         },
+
+        submitInvoiceItem(item: InvoiceItemField, invoice_id: string) {
+            const config = useRuntimeConfig();
+
+            api.createDocument(config.public.databaseID, '641af3a7562c2d9f717c', {
+                invoice_id: invoice_id,
+                name: item.name,
+                rates_type: item.rates_type,
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.subtotal,
+            }).then((_) => {
+                useNuxtApp().$toast.showSuccess('Invoice item created successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    useNuxtApp().$toast.showError(reason.message)
+                }
+            })
+        }
 
     }
 })

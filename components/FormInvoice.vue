@@ -1,10 +1,11 @@
 <template>
   <general-modal :is-modal-open="isModalOpen"
                  :extra-large="true"
+                 class-name="max-w-5xl"
                  name="form-invoice"
                  :title="storeForm.id ? 'Edit invoice' : 'Add invoice'"
-                 @modal-opened="$emit('form-opened'); onModalOpened()"
-                 @modal-closed="$emit('form-closed'); storeForm.reset()">
+                 @modal-opened="emit('form-opened'); onModalOpened()"
+                 @modal-closed="emit('form-closed'); storeForm.reset()">
     <template #caption>
       <h4 class="text-sm text-gray-500 mb-1">{{ activeMerchantName }}</h4>
     </template>
@@ -70,9 +71,122 @@
           <div>
             <label for="client"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
-            <vue-date-picker v-model="storeForm.due_date" format="dd/MM/yyyy" @change="storeForm.setDueDate($event)" />
+            <vue-date-picker v-model="storeForm.due_date" format="dd/MM/yyyy" @change="storeForm.setDueDate($event)"/>
           </div>
         </div>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" class="px-6 py-3">
+                Name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Type
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Qty
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Sub Total
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Action
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) of storeForm.items"
+                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                <div class="flex">
+                  <input type="text" id="name" aria-describedby="helper-text-explanation"
+                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                         placeholder="name of item" @input="storeForm.setItemName(index, $event.target.value)"/>
+                </div>
+              </td>
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                <select id="rates_type" :value="item.rates_type"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                  <option>Fixed</option>
+                  <option>Hourly</option>
+                </select>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                  <button
+                      class="inline-flex items-center p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                      type="button"
+                      @click="storeForm.decreaseItemQuantity(index)">
+                    <span class="sr-only">Quantity button</span>
+                    <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                  <div>
+                    <input type="number"
+                           class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                           :value="item.quantity" required>
+                  </div>
+                  <button
+                      class="inline-flex items-center p-1 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                      type="button"
+                      @click="storeForm.increaseItemQuantity(index)">
+                    <span class="sr-only">Quantity button</span>
+                    <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                <input type="number"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                       placeholder="price of item" @input="storeForm.setItemPrice(index, $event.target.value)"/>
+              </td>
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                {{ item.subtotal }}
+              </td>
+              <td class="px-6 py-4">
+                <button type="button" class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                        @click="storeForm.removeItem(index)">Remove
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" class="p-2">
+                <button
+                    type="button"
+                    class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-primary border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+                    @click="storeForm.addItem({
+                      name: '',
+                      rates_type: 'Fixed',
+                      price: 0,
+                      quantity: 0,
+                      subtotal: 0
+                    })"
+                >
+                  <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  <span>Add Product</span>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
         <general-button :is-loading="storeForm.isLoadingSubmit" :disabled="!storeForm.isFormValid" type="submit"
                         class="mt-4">
           {{ storeForm.id ? 'Update' : 'Create' }}

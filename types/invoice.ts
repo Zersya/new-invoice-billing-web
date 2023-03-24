@@ -11,3 +11,17 @@ export interface Invoice {
     $collectionId: string
     $databaseId: string
 }
+
+export interface InvoiceItem {
+    rates_type: string
+    invoice_id: string
+    name: string
+    quantity: number
+    subtotal: number
+    $id: string
+    $createdAt: string
+    $updatedAt: string
+    $permissions: string[]
+    $collectionId: string
+    $databaseId: string
+}

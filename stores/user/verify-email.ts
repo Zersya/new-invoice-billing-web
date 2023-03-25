@@ -11,8 +11,13 @@ export const useUserVerifyEmail = defineStore('user-verify-email', {
         isError: true,
     }),
     actions: {
-        onAcceptVerify(userId: string, secret: string, expire: string) {
+        onAcceptVerify() {
             this.isLoading = true
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            const secret = urlParams.get('secret');
+            const expire = urlParams.get('expire');
 
             if (!userId || !secret) {
                 this.isError = true

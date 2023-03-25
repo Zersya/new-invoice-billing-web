@@ -69,6 +69,7 @@ import {useUserVerifyEmail} from "~/stores/user/verify-email";
 
 definePageMeta({
   title: "VerifyEmailPage",
+  middleware: ['is-user']
 });
 
 const userVerifyEmail = useUserVerifyEmail();

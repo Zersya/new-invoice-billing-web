@@ -91,6 +91,9 @@
                 Price
               </th>
               <th scope="col" class="px-6 py-3">
+                Tax
+              </th>
+              <th scope="col" class="px-6 py-3">
                 Sub Total
               </th>
               <th scope="col" class="px-6 py-3">
@@ -156,6 +159,12 @@
                        @input="storeForm.setItemPrice(index, $event.target.value)"/>
               </td>
               <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                <input type="number"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                       placeholder="tax of item" :value="item.tax"
+                       @input="storeForm.setItemTax(index, $event.target.value)"/>
+              </td>
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                 {{ item.subtotal }}
               </td>
               <td class="px-6 py-4">
@@ -173,6 +182,7 @@
                       name: '',
                       rates_type: 'fixed',
                       price: 0,
+                      tax: activeMerchantTax,
                       quantity: 0,
                       subtotal: 0
                     })"
@@ -232,6 +242,10 @@ const props = defineProps({
 
 const activeMerchantName = computed(() => {
   return useFetchMerchant().activeMerchant?.name
+})
+
+const activeMerchantTax = computed(() => {
+  return useFetchMerchant().activeMerchant?.tax
 })
 
 const setClient = (client: Client) => {

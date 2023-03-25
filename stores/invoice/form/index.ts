@@ -12,6 +12,7 @@ interface InvoiceItemField {
     name: string,
     quantity: number,
     price: number,
+    tax: number,
     subtotal: number,
     rates_type: string
 }
@@ -62,6 +63,10 @@ export const useFormInvoice = defineStore('formInvoice', {
         setItemPrice(index: number, price: number) {
             this.items[index].price = price
             this.items[index].subtotal = this.items[index].quantity * price
+        },
+        setItemTax(index: number, tax: number) {
+          this.items[index].tax = tax
+          this.items[index].subtotal = (this.items[index].tax / 100) * this.items[index].price
         },
         increaseItemQuantity(index: number) {
             this.items[index].quantity++

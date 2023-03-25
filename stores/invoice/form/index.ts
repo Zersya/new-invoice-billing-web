@@ -5,6 +5,7 @@ import {Invoice, InvoiceItem} from "~/types/invoice";
 import {useFetchMerchant} from "~/stores/merchant";
 import {Client} from "~/types/client";
 import {useFormMerchant} from "~/stores/merchant/form";
+import {useFetchInvoice} from "~/stores/invoice";
 
 interface InvoiceItemField {
     id?: string
@@ -124,7 +125,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 useNuxtApp().$toast.showSuccess('Invoice deleted successfully')
 
                 for (const item of this.items) {
-                    await this.deleteInvoiceItem(item)
+                    await this.deleteInvoiceItem(item?.id)
                 }
 
             }).catch((reason) => {
@@ -158,6 +159,19 @@ export const useFormInvoice = defineStore('formInvoice', {
                 for (const item of this.items) {
                     await this.updateInvoiceItem(item, doc.$id)
                 }
+
+                // compare this.items with useFetchInvoice().invoiceItems
+                // find the difference and delete the difference
+                const invoiceItems = useFetchInvoice().listInvoiceItem
+                const invoiceItemsID = invoiceItems.map((item) => item.$id)
+                const itemsID = this.items.map((item) => item.id)
+
+                const differenceInvoiceItems = invoiceItemsID.filter(x => !itemsID.includes(x));
+                for (const invoiceItemId of differenceInvoiceItems) {
+                    await this.deleteInvoiceItem(invoiceItemId)
+                }
+
+
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
@@ -258,12 +272,12 @@ export const useFormInvoice = defineStore('formInvoice', {
             })
         },
 
-        async deleteInvoiceItem(item: InvoiceItemField) {
-            if (!item.id) return
+        async deleteInvoiceItem(itemId: string | undefined) {
+            if (!itemId) return
 
             const config = useRuntimeConfig();
 
-            await api.deleteDocument(config.public.databaseID, '641af3a7562c2d9f717c', item.id).then((_) => {
+            await api.deleteDocument(config.public.databaseID, '641af3a7562c2d9f717c', itemId).then((_) => {
                 useNuxtApp().$toast.showSuccess('Invoice item deleted successfully')
             }).catch((reason) => {
 

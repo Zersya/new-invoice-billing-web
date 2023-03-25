@@ -8,6 +8,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         await account.getSession('current')
     } catch (e) {
         if (e instanceof AppwriteException) {
+            delete to.query.expire
 
             // parse query to string url encoded
             const query = Object.keys(to.query).map((key) => {

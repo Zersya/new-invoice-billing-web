@@ -70,7 +70,18 @@ definePageMeta({
 const userVerifyEmail = useUserVerifyEmail();
 
 onMounted(() => {
-  userVerifyEmail.onAcceptVerify();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('userId');
+  const secret = urlParams.get('secret');
+  const expire = urlParams.get('expire');
+
+  if (!userId || !secret || !expire) {
+    userVerifyEmail.isError = true
+  }else {
+    userVerifyEmail.onAcceptVerify(userId, secret, expire);
+  }
+
 })
 
 </script>

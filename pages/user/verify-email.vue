@@ -65,7 +65,6 @@ import {useUserVerifyEmail} from "~/stores/user/verify-email";
 
 definePageMeta({
   title: "VerifyEmailPage",
-  layout: 'unauthenticated'
 });
 
 const userVerifyEmail = useUserVerifyEmail();

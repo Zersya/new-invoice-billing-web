@@ -54,7 +54,7 @@ export const useUserVerifyEmail = defineStore('user-verify-email', {
         //         this.isLoading = true
         //     })
         //
-        // },
+        },
 
     }
 })

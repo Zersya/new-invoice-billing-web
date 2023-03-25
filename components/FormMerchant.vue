@@ -160,21 +160,39 @@ const setCountryCode = (code: string) => {
 async function onSubmit() {
   if (storeForm.id) {
     await storeForm.onSubmitUpdate()
+
+    await storeFetch.fetchMerchants()
   } else {
-    await storeForm.onSubmitCreate()
+    const merchantId = await storeForm.onSubmitCreate()
+
+    await storeFetch.fetchMerchants()
+
+    const merchant = storeFetch.listMerchant.find((merchant) => merchant.$id === merchantId)
+
+    if (merchant)
+      storeFetch.setActiveMerchant(merchant, true)
   }
 
   emit('form-closed')
 
-  await storeFetch.fetchMerchants()
 }
 
 async function onDelete() {
   await storeForm.onSubmitDelete()
+  await storeFetch.fetchMerchants()
+
+
+  if (storeForm.id === storeFetch.activeMerchant?.$id) {
+    if (storeFetch.listMerchant.length > 0) {
+      storeFetch.setActiveMerchant(storeFetch.listMerchant[0])
+    } else if (storeFetch.listMerchant.length === 0) {
+      storeFetch.setActiveMerchant(null)
+      navigateTo('/dashboard')
+    }
+  }
 
   emit('form-closed')
 
-  await storeFetch.fetchMerchants()
 }
 
 function setActiveMerchant() {

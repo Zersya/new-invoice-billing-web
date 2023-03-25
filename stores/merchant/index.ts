@@ -13,18 +13,18 @@ interface MerchantState {
 export const useFetchMerchant = defineStore('fetchMerchant', {
     state: (): MerchantState => ({
         listMerchant: [],
-        isLoadingFetch: false,
+        isLoadingFetch: true,
         activeMerchant: null
     }),
     actions: {
-        setActiveMerchant(merchant: Merchant, initialLoad = false) {
+        setActiveMerchant(merchant: Merchant | null, initialLoad = false) {
             this.activeMerchant = merchant
 
             if (!initialLoad) {
                 useNuxtApp().$toast.showSuccess('Merchant has been selected')
             }
         },
-        async fetchMerchants() {
+        async fetchMerchants(isInitial = false) {
             this.isLoadingFetch = true
 
             const responseAccount = await api.getAccount()
@@ -37,6 +37,9 @@ export const useFetchMerchant = defineStore('fetchMerchant', {
             ])
                 .then((response) => {
                     this.listMerchant = response.documents as Merchant[]
+                    if (this.listMerchant.length > 0 && isInitial) {
+                        this.setActiveMerchant(this.listMerchant[0], true)
+                    }
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
                             useNuxtApp().$toast.showError(reason.message)

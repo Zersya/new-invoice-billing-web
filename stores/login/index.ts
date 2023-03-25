@@ -35,14 +35,22 @@ export const useLogin = defineStore('login', {
 
                 api.getAccount().then(async (account) => {
                     console.log(account.emailVerification)
-                    if (!account.emailVerification) {
-                        await api.verifyEmail().catch((reason) => {
-                            if (reason instanceof AppwriteException) {
-                                useNuxtApp().$toast.showError(reason.message)
-                            }
-                        })
+                    // if (!account.emailVerification) {
+                    //     await api.verifyEmail().catch((reason) => {
+                    //         if (reason instanceof AppwriteException) {
+                    //             useNuxtApp().$toast.showError(reason.message)
+                    //         }
+                    //     })
+                    // }
+
+                    // get redirect url
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirect = urlParams.get('redirect');
+                    if (redirect) {
+                        navigateTo(redirect)
+                    } else {
+                        navigateTo('/dashboard')
                     }
-                    navigateTo('/dashboard')
                 })
 
 

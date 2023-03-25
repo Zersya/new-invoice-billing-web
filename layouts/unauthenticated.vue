@@ -17,6 +17,4 @@ import InvingLoading from "~/components/general/InvingLoading.vue";
 defineNuxtComponent({
   name: "UnAuthenticationLayout",
 })
-
-const rootLoading = useRootLoading();
 </script>

@@ -71,14 +71,14 @@
           <nuxt-link type="button"
                      to="/clients"
                      active-class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300"
-                     class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                     :class="[`${!storeFetch.activeMerchant ? 'pointer-events-none text-gray-300': ''}`, 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="currentColor"
                       d="M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9A3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42c-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3a3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3a3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.536 5.536 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13v-1.75M0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9c-.59.68-.95 1.62-.95 2.65V20H0m24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65c2.56.34 4.45 1.51 4.45 2.9V20Z"/>
               </svg>
               <span
-                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Clients</span>
+                  class="ml-5 w-32 text-sm text-left font-semibold dark:text-gray-200 md:block">Clients</span>
             </div>
           </nuxt-link>
         </li>
@@ -86,7 +86,7 @@
           <nuxt-link type="button"
                      to="/invoices"
                      active-class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300"
-                     class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                     :class="[`${!storeFetch.activeMerchant ? 'pointer-events-none text-gray-300': ''}` , 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -95,14 +95,15 @@
                 </g>
               </svg>
               <span
-                  class="ml-5 w-32 text-sm text-left font-semibold text-gray-800 dark:text-gray-200 md:block">Invoices</span>
+                  class="ml-5 w-32 text-sm text-left font-semibold dark:text-gray-200 md:block">Invoices</span>
             </div>
           </nuxt-link>
         </li>
       </ul>
       <div :class="[`flex justify-end transition-all ease-in-out`]">
         <div class="flex fixed bottom-1 items-center mb-2">
-          <span :class="`text-sm font-semibold text-gray-800 self-center ${isSidebarOpen ? 'hidden': 'mr-3'}`">Keep Open</span>
+          <span
+              :class="`text-sm font-semibold text-gray-800 self-center ${isSidebarOpen ? 'hidden': 'mr-3'}`">Keep Open</span>
           <button type="button" :class="['p-2 bg-white shadow-inner']"
                   @click="toggleSidebar">
 
@@ -142,8 +143,10 @@ const isLoadingSignout = ref(false)
 const isSidebarOpen = ref(false)
 
 onMounted(() => {
-  storeFetch.fetchMerchants().then(() => {
-    storeFetch.listMerchant.length > 0 && storeFetch.setActiveMerchant(storeFetch.listMerchant[0], true)
+  storeFetch.fetchMerchants(true).then(() => {
+    if (storeFetch.listMerchant.length === 0) {
+      navigateTo('/dashboard')
+    }
   })
 })
 

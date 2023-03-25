@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Merchant} from "~/types/merchant";
+import {useFetchMerchant} from "~/stores/merchant";
 
 interface FormState {
     id?: string
@@ -162,7 +163,7 @@ export const useFormMerchant = defineStore('formMerchant', {
         async onSubmitCreate() {
 
             if (!this.isFormValid) {
-                return
+                return ''
             }
 
             this.isLoadingSubmit = true
@@ -178,7 +179,7 @@ export const useFormMerchant = defineStore('formMerchant', {
 
             const config = useRuntimeConfig();
 
-            await api.createDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', {
+            return await api.createDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', {
                 name: this.name,
                 description: this.description,
                 address: this.address,
@@ -188,8 +189,10 @@ export const useFormMerchant = defineStore('formMerchant', {
                 merchant_code: this.merchantCode,
                 owner_id: responseAccount.$id,
                 latest_invoice_number: this.invoiceNumber
-            }).then((_) => {
+            }).then((doc) => {
                 useNuxtApp().$toast.showSuccess('Merchant created successfully')
+
+                return doc.$id
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {

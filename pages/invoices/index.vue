@@ -91,6 +91,7 @@ import {useFetchInvoice} from "~/stores/invoice";
 import {useFormInvoice} from "~/stores/invoice/form";
 import {Invoice} from "~/types/invoice";
 import {useFetchClient} from "~/stores/client";
+import {useFetchMerchant} from "~/stores/merchant";
 
 const storeFetch = useFetchInvoice()
 const storeForm = useFormInvoice()
@@ -104,11 +105,9 @@ definePageMeta({
   middleware: ["is-user"],
 });
 
-
 onMounted(() => {
   storeFetch.fetchInvoices()
 })
-
 
 async function selectInvoice(invoice: Invoice) {
   storeForm.setInvoice(invoice)

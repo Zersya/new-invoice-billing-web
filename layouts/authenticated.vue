@@ -4,7 +4,7 @@
 
     <div class="flex">
       <Sidebar/>
-      <div class="p-4 w-full">
+      <div v-if="!useFetchMerchant().isLoadingFetch" class="p-4 w-full">
         <slot />
       </div>
     </div>
@@ -13,16 +13,12 @@
 
 <script setup lang="ts">
 import Toast from "~/components/general/Toast.vue";
-import InvingLoading from "~/components/general/InvingLoading.vue";
-import {usePageTitle, useRootLoading} from "~/composables/states";
 import Sidebar from "~/components/Sidebar.vue";
+import {useFetchMerchant} from "~/stores/merchant";
 
 defineNuxtComponent({
   name: "AuthenticationLayout",
 
 })
-
-const pageTitle = usePageTitle()
-const rootLoading = useRootLoading();
 
 </script>

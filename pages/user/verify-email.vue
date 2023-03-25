@@ -71,10 +71,10 @@ const userVerifyEmail = useUserVerifyEmail();
 
 onMounted(() => {
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get('userId');
-  const secret = urlParams.get('secret');
-  const expire = urlParams.get('expire');
+  // const urlParams = new URLSearchParams(window.location.search);
+  const userId = null
+  const secret = null
+  const expire = null
 
   if (!userId || !secret || !expire) {
     userVerifyEmail.isError = true

@@ -31,8 +31,21 @@ export const useLogin = defineStore('login', {
 
             this.setIsLoading(true)
 
-            api.createSession(this.email, this.password).then((_) => {
-                navigateTo('/dashboard')
+            return api.createSession(this.email, this.password).then((_) => {
+
+                api.getAccount().then(async (account) => {
+                    console.log(account.emailVerification)
+                    if (!account.emailVerification) {
+                        await api.verifyEmail().catch((reason) => {
+                            if (reason instanceof AppwriteException) {
+                                useNuxtApp().$toast.showError(reason.message)
+                            }
+                        })
+                    }
+                    navigateTo('/dashboard')
+                })
+
+
             }).catch((e) => {
 
                 if (e instanceof AppwriteException) {

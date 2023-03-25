@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
+import {useLogin} from "~/stores/login";
 
 export const useRegister = defineStore('register', {
     state: () => ({
@@ -45,7 +46,10 @@ export const useRegister = defineStore('register', {
             this.setIsLoading(true)
 
             api.createAccount(this.email, this.password, this.name).then((_) => {
-                navigateTo('/login')
+                const login = useLogin()
+                login.setEmail(this.email)
+                login.setPassword(this.password)
+                login.onSubmitLogin()
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {

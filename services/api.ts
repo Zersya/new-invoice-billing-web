@@ -27,6 +27,16 @@ let api = {
         return api.provider().account.create("unique()", email, password, name);
     },
 
+    verifyEmail: () => {
+        const url = window.location.origin;
+
+        return api.provider().account.createVerification(`${url}/user/verify-email`);
+    },
+
+    verifyConfirmationEmail: (userID: string, secret: string) => {
+        return api.provider().account.updateVerification(userID, secret);
+    },
+
     // Allow the user to log in by creating a session
     createSession: (email: string, password: string) => {
         return api.provider().account.createEmailSession(email, password);

@@ -63,8 +63,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         setItemPrice(index: number, price: number) {
             this.items[index].price = price
 
-            const taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
-            this.items[index].subtotal -= taxAmount
+            this.setSubTotal(index)
         },
         setItemTax(index: number, tax: number) {
             if (tax > 100) {
@@ -91,9 +90,17 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
 
         setSubTotal(index: number) {
-            const taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
+            let taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
+
+            // prevent taxAmount to be negative subtotal
+            if (taxAmount > this.items[index].price * this.items[index].quantity) {
+                taxAmount = this.items[index].price * this.items[index].quantity
+            }
+
             const subTotal = this.items[index].price * this.items[index].quantity
-            this.items[index].subtotal = subTotal - taxAmount
+
+            // 2 decimal points precision
+            this.items[index].subtotal = Math.round((subTotal - taxAmount) * 100) / 100
         },
 
         setInvoice(invoice: Invoice) {
@@ -185,13 +192,25 @@ export const useFormInvoice = defineStore('formInvoice', {
 
                 // compare this.items with useFetchInvoice().invoiceItems
                 // find the difference and delete the difference
-                const invoiceItems = useFetchInvoice().listInvoiceItem
-                const invoiceItemsID = invoiceItems.map((item) => item.$id)
-                const itemsID = this.items.map((item) => item.id)
+                const invoiceItems = useFetchInvoice().listInvoiceItem.map((item) => item)
+                const items = this.items.map((item) => item)
 
-                const differenceInvoiceItems = invoiceItemsID.filter(x => !itemsID.includes(x));
-                for (const invoiceItemId of differenceInvoiceItems) {
+                // find the difference, by converting to array of id
+                const differenceInvoiceItemsId = invoiceItems.map((e) => e.$id)
+                    .filter(x => !items.map((e) => e.id).includes(x));
+
+                // delete the difference
+                for (const invoiceItemId of differenceInvoiceItemsId) {
                     await this.deleteInvoiceItem(invoiceItemId)
+                }
+
+                // find the difference, filter the item that doesn't have id
+                // then submit the difference
+                for (const item of items.filter((item) => !item.id)) {
+                    const foundedItem = this.items.find((x) => x.id === item.id)
+                    if (foundedItem) {
+                        await this.submitInvoiceItem(foundedItem, doc.$id)
+                    }
                 }
 
 

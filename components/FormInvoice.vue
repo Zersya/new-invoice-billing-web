@@ -39,34 +39,14 @@
           <div>
             <label for="client"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Client</label>
-            <div>
-              <button id="client-btn" data-dropdown-toggle="dropdown-client"
-                      class="flex-shrink-0 z-10 inline-flex w-full py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-                      type="button">
-                <div class="flex w-full">
-                  {{ storeForm?.client?.name ?? 'Please select client' }}
-                </div>
-                <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-              </button>
-              <div id="dropdown-client"
-                   class="z-10 w-48 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="phone-country-btn">
-                  <li v-for="client in storeClients.listClient" :key="client.$id">
-                    <button type="button"
-                            class="flex items-center justify-between w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
-                            data-dropdown-value="dropdown-client" :value="client"
-                            @click="setClient(client)">
-                      <span>{{ client.name }}</span>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <select
+                v-model="client"
+                class="flex-shrink-0 z-10 inline-flex w-full py-2.5 px-4 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600">
+              <option :value="null">Please select the client</option>
+              <option v-for="client in storeClients.listClient" :key="client.$id" :value="client">
+                <span>{{ client.name }}</span>
+              </option>
+            </select>
           </div>
           <div>
             <label for="client"
@@ -135,6 +115,7 @@
                   </button>
                   <div>
                     <input type="number"
+                           readonly
                            class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                            :value="item.quantity" required>
                   </div>
@@ -256,17 +237,15 @@ const activeMerchantTax = computed(() => {
   return useFetchMerchant().activeMerchant?.tax
 })
 
-const setClient = (client: Client) => {
-  storeForm.setClient(client)
-
-  const $dropdown = document.getElementById('dropdown-client')
-  const $triggerDropdown = document.getElementById('client-btn')
-
-  if ($dropdown) {
-    const dropdown = new Dropdown($dropdown, $triggerDropdown)
-    dropdown.hide()
+// computed with setter and getter
+const client = computed({
+  get(): any {
+    return storeForm.client
+  },
+  set(value: Client) {
+    storeForm.setClient(value)
   }
-}
+})
 
 const onModalOpened = () => {
   const merchant = useFetchMerchant().activeMerchant

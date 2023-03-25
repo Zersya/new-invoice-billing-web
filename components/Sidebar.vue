@@ -38,6 +38,7 @@
         <li>
           <nuxt-link type="button"
                      to="/dashboard"
+                     active-class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300"
                      class="w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">

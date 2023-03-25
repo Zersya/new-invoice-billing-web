@@ -62,22 +62,40 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
         setItemPrice(index: number, price: number) {
             this.items[index].price = price
-            this.items[index].subtotal = this.items[index].quantity * price
+
+            const taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
+            this.items[index].subtotal -= taxAmount
         },
         setItemTax(index: number, tax: number) {
-          this.items[index].tax = tax
-          this.items[index].subtotal = (this.items[index].tax / 100) * this.items[index].price
+            if (tax > 100) {
+                tax = 100
+            } else if (tax < 0) {
+                tax = 0
+            }
+
+            this.items[index].tax = tax
+
+            this.setSubTotal(index)
         },
         increaseItemQuantity(index: number) {
             this.items[index].quantity++
-            this.items[index].subtotal = this.items[index].quantity * this.items[index].price
+
+            this.setSubTotal(index)
         },
         decreaseItemQuantity(index: number) {
             if (this.items[index].quantity > 1) {
                 this.items[index].quantity--
-                this.items[index].subtotal = this.items[index].quantity * this.items[index].price
+
+                this.setSubTotal(index)
             }
         },
+
+        setSubTotal(index: number) {
+            const taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
+            const subTotal = this.items[index].price * this.items[index].quantity
+            this.items[index].subtotal = subTotal - taxAmount
+        },
+
         setInvoice(invoice: Invoice) {
             this.id = invoice.$id
             this.number = invoice.number
@@ -236,6 +254,13 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
 
         async submitInvoiceItem(item: InvoiceItemField, invoice_id: string) {
+            let cvtTax: number = 0
+            try {
+                cvtTax = Number(item.tax) / 100
+            } catch (e) {
+                useNuxtApp().$toast.showError('Invalid tax value')
+            }
+
             const config = useRuntimeConfig();
 
             await api.createDocument(config.public.databaseID, '641af3a7562c2d9f717c', {
@@ -244,6 +269,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 rates_type: item.rates_type,
                 quantity: item.quantity,
                 price: item.price,
+                tax: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Invoice item created successfully')
@@ -258,6 +284,13 @@ export const useFormInvoice = defineStore('formInvoice', {
         async updateInvoiceItem(item: InvoiceItemField, invoice_id: string) {
             if (!item.id) return
 
+            let cvtTax: number = 0
+            try {
+                cvtTax = Number(item.tax) / 100
+            } catch (e) {
+                useNuxtApp().$toast.showError('Invalid tax value')
+            }
+
             const config = useRuntimeConfig();
 
             await api.updateDocument(config.public.databaseID, '641af3a7562c2d9f717c', item.id, {
@@ -266,6 +299,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 rates_type: item.rates_type,
                 quantity: item.quantity,
                 price: item.price,
+                tax: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
                 useNuxtApp().$toast.showSuccess('Invoice item updated successfully')

@@ -40,6 +40,18 @@ export const useFetchMerchant = defineStore('fetchMerchant', {
                     if (this.listMerchant.length > 0 && isInitial) {
                         this.setActiveMerchant(this.listMerchant[0], true)
                     }
+
+                    if (this.activeMerchant) {
+                        const foundMerchant = this.listMerchant.find(merchant => merchant.$id === this.activeMerchant?.$id)
+                        if (foundMerchant) {
+                            this.setActiveMerchant(foundMerchant)
+                        } else {
+                            this.setActiveMerchant(null)
+                        }
+                    }
+
+
+
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
                             useNuxtApp().$toast.showError(reason.message)

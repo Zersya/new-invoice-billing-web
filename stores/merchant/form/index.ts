@@ -29,7 +29,7 @@ export const useFormMerchant = defineStore('formMerchant', {
         phone: '',
         tax: 0,
         merchantCode: '',
-        invoiceNumber: 0,
+        invoiceNumber: 1,
         isLoadingSubmit: false,
         isLoadingDelete: false
     }),
@@ -97,7 +97,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.phone = ''
             this.tax = 0
             this.merchantCode = ''
-            this.invoiceNumber = 0
+            this.invoiceNumber = 1
             this.isLoadingSubmit = false
         },
 

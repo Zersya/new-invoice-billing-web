@@ -3,6 +3,7 @@ import {navigateTo} from "#app";
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {useLogin} from "~/stores/login";
+import {useUser} from "~/stores/user";
 
 export const useRegister = defineStore('register', {
     state: () => ({
@@ -49,8 +50,13 @@ export const useRegister = defineStore('register', {
                 const login = useLogin()
                 login.setEmail(this.email)
                 login.setPassword(this.password)
-                login.onSubmitLogin()
+                login.onSubmitLogin()?.then((_) => {
+                    useUser().sendVerificationEmail().then((_) => {
+                    })
+                })
+
             }).catch((reason) => {
+
 
                 if (reason instanceof AppwriteException) {
                     useNuxtApp().$toast.showError(reason.message)

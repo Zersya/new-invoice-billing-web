@@ -8,7 +8,7 @@ export const useUserVerifyEmail = defineStore('user-verify-email', {
         isLoading: false,
         isExpired: false,
         isVerified: false,
-        isError: true,
+        isError: false,
     }),
     actions: {
         onAcceptVerify() {

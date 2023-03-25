@@ -1,7 +1,6 @@
 import api from "~/services/api";
 import {navigateTo} from "#app";
 import {AppwriteException} from "appwrite";
-import * as process from "process";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
@@ -10,7 +9,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
         if (session.current) {
             const redirect = to.query.redirect as string | undefined
-            return navigateTo(redirect ? redirect : '/dashboard')
+            const query = to.query.query as string | undefined
+
+            // replace comma with ampersand
+            const decodedQuery = query?.replace(/,/g, '&')
+            // remove new line
+            decodedQuery?.replace(/(\r\n|\n|\r)/gm, '')
+
+            return navigateTo((redirect || '/dashboard') + (decodedQuery ? '?' + decodedQuery : ''))
         }
     } catch (e) {
         if (e instanceof AppwriteException) {

@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import {navigateTo} from "#app";
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
+import {useUser} from "~/stores/user";
 
 export const useLogin = defineStore('login', {
     state: () => ({
@@ -33,17 +34,9 @@ export const useLogin = defineStore('login', {
 
             return api.createSession(this.email, this.password).then((_) => {
 
-                api.getAccount().then(async (account) => {
-                    console.log(account.emailVerification)
-                    // if (!account.emailVerification) {
-                    //     await api.verifyEmail().catch((reason) => {
-                    //         if (reason instanceof AppwriteException) {
-                    //             useNuxtApp().$toast.showError(reason.message)
-                    //         }
-                    //     })
-                    // }
+                return api.getAccount().then(async (account) => {
+                    useUser().setAccount(account)
 
-                    // get redirect url
                     const urlParams = new URLSearchParams(window.location.search);
                     const redirect = urlParams.get('redirect');
                     if (redirect) {

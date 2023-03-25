@@ -1,7 +1,6 @@
 import api from "~/services/api";
 import {navigateTo} from "#app";
 import {AppwriteException} from "appwrite";
-import process from "process";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
@@ -9,7 +8,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         await account.getSession('current')
     } catch (e) {
         if (e instanceof AppwriteException) {
-            return navigateTo('/login?redirect=' + to.fullPath)
+
+            // parse query to string url encoded
+            const query = Object.keys(to.query).map((key) => {
+                const value = to.query[key]
+                return encodeURIComponent(key) + '=' + encodeURIComponent(value as string)
+            })
+
+            return navigateTo('/login?redirect=' + to.path + '&query=' + query)
         }
     }
 })

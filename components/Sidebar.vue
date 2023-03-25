@@ -3,11 +3,24 @@
   <div
       :class="[`shadow-xl top-0 z-40 left-0 w-16 h-screen transition-all ease-in-out -translate-x-full sm:translate-x-0 hover:w-96`, `${isSidebarOpen ? 'w-96': ''}`]">
     <div class="px-3 py-4 h-full overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-800">
-      <div class="flex justify-between items-center mb-5">
-        <a href="https://app.inving.co/" class="flex">
-          <img class="w-10" src="/logo-inving.png" alt="Inving Logo"/>
-          <span class="ml-4 text-lg font-semibold text-gray-800 dark:text-gray-200 md:block">Inving</span>
-        </a>
+      <div class="flex justify-between items-center">
+        <div class="flex flex-row items-center">
+          <img class="w-10 h-7" src="/logo-inving.png" alt="Inving Logo"/>
+          <div class="ml-4">
+            <div class="text-lg font-semibold text-gray-800 dark:text-gray-200">Inving</div>
+            <button
+                data-tooltip-target="tooltip-default"
+                class="bg-primary-100 text-white text-xs font-medium px-2.5 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300"
+                @click="toggleSidebar">
+              {{ isEmailVerified ? 'Verified' : 'Unverified' }}
+            </button>
+            <div id="tooltip-default" role="tooltip"
+                 class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+              Email {{ isEmailVerified ? 'verified' : 'unverified' }}
+              <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+          </div>
+        </div>
         <!-- button signout -->
         <button @click="signOut" type="button"
                 class="hover:cursor-pointer h-10 my-3 flex justify-center items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -19,7 +32,8 @@
           <general-spinner-loading v-else class="inline" loading-color="fill-primary-200"/>
         </button>
       </div>
-      <div class="border-t border-gray-200 dark:border-gray-700"/>
+
+      <div class="border-t border-gray-200 dark:border-gray-700 mt-4"/>
       <ul class="space-y-2">
         <li>
           <nuxt-link type="button"
@@ -38,9 +52,9 @@
         </li>
         <div class="border-t border-gray-200 dark:border-gray-700"/>
 
-        <li v-for="merchant in storeFetch.listMerchant" :key="merchant.$id">
+        <li v-for="merchant in storeFetchMerchants.listMerchant" :key="merchant.$id">
           <button type="button" @click="selectMerchant(merchant)"
-                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetch.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
+                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetchMerchants.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
@@ -71,7 +85,7 @@
           <nuxt-link type="button"
                      to="/clients"
                      active-class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300"
-                     :class="[`${!storeFetch.activeMerchant ? 'pointer-events-none text-gray-300': ''}`, 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
+                     :class="[`${!storeFetchMerchants.activeMerchant ? 'pointer-events-none text-gray-300': ''}`, 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="currentColor"
@@ -86,7 +100,7 @@
           <nuxt-link type="button"
                      to="/invoices"
                      active-class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300"
-                     :class="[`${!storeFetch.activeMerchant ? 'pointer-events-none text-gray-300': ''}` , 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
+                     :class="[`${!storeFetchMerchants.activeMerchant ? 'pointer-events-none text-gray-300': ''}` , 'w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700']">
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -134,20 +148,32 @@ import {useFormMerchant} from "~/stores/merchant/form";
 import {Merchant} from "~/types/merchant";
 import api from "~/services/api";
 import {navigateTo} from "#app";
+import {useUser} from "~/stores/user";
+import {initTooltips} from "flowbite";
 
-const storeFetch = useFetchMerchant()
-const storeForm = useFormMerchant()
+const storeFetchMerchants = useFetchMerchant()
+const storeFormMerchant = useFormMerchant()
+const storeUser = useUser()
 
 const isModalFormMerchantOpen = ref(false)
 const isLoadingSignout = ref(false)
 const isSidebarOpen = ref(false)
 
 onMounted(() => {
-  storeFetch.fetchMerchants(true).then(() => {
-    if (storeFetch.listMerchant.length === 0) {
+  initTooltips()
+  if (!storeUser.account) {
+    storeUser.fetchAccount()
+  }
+
+  storeFetchMerchants.fetchMerchants(true).then(() => {
+    if (storeFetchMerchants.listMerchant.length === 0) {
       navigateTo('/dashboard')
     }
   })
+})
+
+const isEmailVerified = computed(() => {
+  return storeUser.account?.emailVerification
 })
 
 const routeActiveClass = (route: string): string => {
@@ -155,7 +181,7 @@ const routeActiveClass = (route: string): string => {
 }
 
 function selectMerchant(merchant: Merchant) {
-  storeForm.setMerchant(merchant)
+  storeFormMerchant.setMerchant(merchant)
   isModalFormMerchantOpen.value = true
 }
 

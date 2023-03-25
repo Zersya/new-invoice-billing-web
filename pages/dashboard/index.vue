@@ -1,8 +1,6 @@
 <template>
   <div class="flex-col w-full m-4">
     <h1>Hello Dashboard</h1>
-    <general-button :is-loading="isLoading" @click="signOut">Signout</general-button>
-    <a class="mt-4" href="/login">Login</a>
   </div>
 </template>
 

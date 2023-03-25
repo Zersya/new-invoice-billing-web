@@ -76,7 +76,7 @@ const userVerifyEmail = useUserVerifyEmail();
 
 onMounted(() => {
 
-  // userVerifyEmail.onAcceptVerify();
+  userVerifyEmail.onAcceptVerify();
 
 })
 

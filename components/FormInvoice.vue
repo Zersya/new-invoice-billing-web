@@ -49,9 +49,18 @@
             </select>
           </div>
           <div>
-            <label for="client"
+            <label for="due_date"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
             <vue-date-picker v-model="storeForm.due_date" format="dd/MM/yyyy" @change="storeForm.setDueDate($event)"/>
+          </div>
+          <div>
+            <label for="description"
+                   class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <textarea name="description" id="description" rows="3"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="Type invoice description" required
+                      :value="storeForm.description"
+                      @input="storeForm.setDescription($event.target.value)"></textarea>
           </div>
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">

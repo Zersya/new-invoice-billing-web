@@ -20,6 +20,7 @@ interface InvoiceItemField {
 interface FormInvoiceState {
     id?: string
     number: string
+    description: string
     due_date: Date | null
     client_id: string
     merchant_id: string
@@ -34,6 +35,7 @@ export const useFormInvoice = defineStore('formInvoice', {
     state: (): FormInvoiceState => ({
         id: '',
         number: '',
+        description: '',
         due_date: null,
         client_id: '',
         merchant_id: '',
@@ -106,6 +108,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         setInvoice(invoice: Invoice) {
             this.id = invoice.$id
             this.number = invoice.number
+            this.description = invoice.description
             this.due_date = invoice.due_date
             this.client_id = invoice.client_id
             this.merchant_id = invoice.merchant_id
@@ -117,6 +120,10 @@ export const useFormInvoice = defineStore('formInvoice', {
             const num = number?.toString().padStart(4, '0')
 
             this.number = `INV-${year}-${month}-${num}`
+        },
+
+        setDescription(description: string) {
+            this.description = description
         },
 
         setDueDate(due_date: Date) {
@@ -135,6 +142,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         reset() {
             this.id = ''
             this.number = ''
+            this.description = ''
             this.client_id = ''
             this.merchant_id = ''
             this.due_date = null
@@ -180,6 +188,7 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             await api.updateDocument(config.public.databaseID, '6418753f5e769294335b', this.id, {
                 number: this.number,
+                description: this.description,
                 due_date: this.due_date,
                 client_id: this.client_id,
                 client_name: this.client?.name,
@@ -238,6 +247,7 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             await api.createDocument(config.public.databaseID, '6418753f5e769294335b', {
                 number: this.number,
+                description: this.description,
                 client_id: this.client_id,
                 client_name: this.client?.name,
                 merchant_id: this.merchant_id,

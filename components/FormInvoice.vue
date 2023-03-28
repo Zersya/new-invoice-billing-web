@@ -163,7 +163,8 @@
                 </div>
               </td>
               <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                {{ item.subtotal }}
+                <!-- use filter toCurrency on nuxt 3 -->
+                {{ formatIDR(item.subtotal) }}
               </td>
               <td class="px-6 py-4">
                 <button type="button" class="font-medium text-red-600 dark:text-red-500 hover:underline"
@@ -208,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import {Dropdown, initDropdowns} from "flowbite";
+import {initDropdowns} from "flowbite";
 import {useFormInvoice} from '~/stores/invoice/form';
 import {useFetchInvoice} from "~/stores/invoice";
 import {useFetchMerchant} from "~/stores/merchant";
@@ -216,6 +217,7 @@ import {useFetchClient} from "~/stores/client";
 import {Client} from "~/types/client";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import {formatIDR} from "../utils/functions";
 
 
 const storeForm = useFormInvoice()
@@ -245,6 +247,7 @@ const activeMerchantName = computed(() => {
 const activeMerchantTax = computed(() => {
   return useFetchMerchant().activeMerchant?.tax
 })
+
 
 // computed with setter and getter
 const client = computed({
@@ -279,8 +282,6 @@ const onModalOpened = () => {
         })
       }
     })
-
-
   }
 }
 

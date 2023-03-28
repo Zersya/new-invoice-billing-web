@@ -26,7 +26,6 @@ export default defineNuxtConfig({
     },
     plugins: [
         '~/plugins/toast-notifier.ts',
-        '~/plugins/date.ts',
     ],
 
     css: [

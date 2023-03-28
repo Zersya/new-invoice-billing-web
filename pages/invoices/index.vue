@@ -74,7 +74,7 @@
           {{ invoice.client_name }}
         </td>
         <td class="px-6 py-4">
-          {{ useNuxtApp().$formatDate.format(invoice.due_date) }}
+          {{ formatDate(invoice.due_date) }}
         </td>
         <td class="px-6 py-4">
           <span @click="selectInvoice(invoice)"
@@ -92,6 +92,7 @@ import {useFormInvoice} from "~/stores/invoice/form";
 import {Invoice} from "~/types/invoice";
 import {useFetchClient} from "~/stores/client";
 import {useFetchMerchant} from "~/stores/merchant";
+import {formatDate} from "../../utils/functions";
 
 const storeFetch = useFetchInvoice()
 const storeForm = useFormInvoice()

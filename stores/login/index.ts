@@ -6,8 +6,8 @@ import {useUser} from "~/stores/user";
 
 export const useLogin = defineStore('login', {
     state: () => ({
-        email: 'zeinersyad@gmail.com',
-        password: 'password',
+        email: '',
+        password: '',
         isLoading: false,
     }),
     getters: {

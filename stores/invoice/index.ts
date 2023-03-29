@@ -3,11 +3,13 @@ import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
 import {Invoice, InvoiceItem} from '~/types/invoice';
 import {useFetchMerchant} from "~/stores/merchant";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 interface InvoiceState {
     listInvoice: Invoice[]
     listInvoiceItem: InvoiceItem[]
     isLoadingFetch: boolean
+    invoiceDetail: Invoice | null
 }
 
 export const useFetchInvoice = defineStore('fetchInvoice', {
@@ -15,12 +17,13 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
         listInvoice: [],
         listInvoiceItem: [],
         isLoadingFetch: false,
+        invoiceDetail: null
     }),
     actions: {
         async fetchInvoices(searchKey?: string) {
             this.isLoadingFetch = true
 
-            const merchant = await useFetchMerchant().activeMerchant
+            const merchant = useActiveMerchant().merchant
             const merchantId = merchant?.$id
 
             if (!merchantId) {
@@ -41,6 +44,24 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
             await api.listDocuments(config.public.databaseID, '6418753f5e769294335b', queries)
                 .then((response) => {
                     this.listInvoice = response.documents as Invoice[]
+                }).catch((reason) => {
+                        if (reason instanceof AppwriteException) {
+                            useNuxtApp().$toast.showError(reason.message)
+                        }
+                    }
+                ).finally(() => {
+                    this.isLoadingFetch = false
+                })
+        },
+
+        async fetchInvoice(invoiceId: string) {
+            this.isLoadingFetch = true
+
+            const config = useRuntimeConfig();
+
+            await api.getDocument(config.public.databaseID, '6418753f5e769294335b', invoiceId)
+                .then((response) => {
+                    this.invoiceDetail = response as Invoice
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
                             useNuxtApp().$toast.showError(reason.message)

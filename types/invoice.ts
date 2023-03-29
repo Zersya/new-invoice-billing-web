@@ -2,6 +2,7 @@ export interface Invoice {
     number: string
     description: string
     due_date: Date | null
+    issued_date: Date | null
     client_id: string
     client_name: string
     merchant_id: string

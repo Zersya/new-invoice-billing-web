@@ -218,6 +218,7 @@ import {Client} from "~/types/client";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {formatIDR} from "../utils/functions";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 
 const storeForm = useFormInvoice()
@@ -241,11 +242,11 @@ const props = defineProps({
 
 
 const activeMerchantName = computed(() => {
-  return useFetchMerchant().activeMerchant?.name
+  return useActiveMerchant().merchant?.name
 })
 
 const activeMerchantTax = computed(() => {
-  return useFetchMerchant().activeMerchant?.tax
+  return useActiveMerchant().merchant?.tax
 })
 
 
@@ -260,7 +261,7 @@ const client = computed({
 })
 
 const onModalOpened = () => {
-  const merchant = useFetchMerchant().activeMerchant
+  const merchant = useActiveMerchant().merchant
   const latestInvoiceNumber = merchant?.latest_invoice_number
   storeForm.setMerchantId(merchant?.$id ?? '')
   storeForm.setNumber(latestInvoiceNumber)

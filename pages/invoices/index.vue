@@ -74,11 +74,13 @@
           {{ invoice.client_name }}
         </td>
         <td class="px-6 py-4">
-          {{ formatDate(invoice.due_date) }}
+          {{ parseDate(invoice.due_date ?? '') }}
         </td>
         <td class="px-6 py-4">
           <span @click="selectInvoice(invoice)"
                 class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
+          <span @click="navigateNewTab(invoice)"
+                class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4">View</span>
         </td>
       </tr>
       </tbody>
@@ -91,8 +93,7 @@ import {useFetchInvoice} from "~/stores/invoice";
 import {useFormInvoice} from "~/stores/invoice/form";
 import {Invoice} from "~/types/invoice";
 import {useFetchClient} from "~/stores/client";
-import {useFetchMerchant} from "~/stores/merchant";
-import {formatDate} from "../../utils/functions";
+import {parseDate} from "~/utils/functions";
 
 const storeFetch = useFetchInvoice()
 const storeForm = useFormInvoice()
@@ -120,6 +121,10 @@ async function selectInvoice(invoice: Invoice) {
 
 function searchInvoice() {
   storeFetch.fetchInvoices(searchKey.value)
+}
+
+function navigateNewTab(invoice: Invoice) {
+  window.open(`/invoices/${invoice.$id}`, '_blank')
 }
 
 </script>

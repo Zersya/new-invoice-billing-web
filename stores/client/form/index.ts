@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Client} from "~/types/client";
-import {useFetchMerchant} from "~/stores/merchant";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 interface FormClientState {
     id?: string
@@ -111,7 +111,7 @@ export const useFormClient = defineStore('formClient', {
 
             this.isLoadingSubmit = true
 
-            const merchant = useFetchMerchant().activeMerchant
+            const merchant = useActiveMerchant().merchant
 
             const config = useRuntimeConfig();
 

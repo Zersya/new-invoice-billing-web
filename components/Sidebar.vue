@@ -55,7 +55,7 @@
 
         <li v-for="merchant in storeFetchMerchants.listMerchant" :key="merchant.$id">
           <button type="button" @click="selectMerchant(merchant)"
-                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeFetchMerchants.activeMerchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
+                  :class="`w-full hover:cursor-pointer h-10 my-3 flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white ${merchant.$id === storeActiveMerchant.merchant?.$id ? 'bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700': 'hover:bg-gray-100 dark:hover:bg-gray-700'}`">
             <span
                 class="flex items-center justify-center w-4 h-4 p-3 text-sm  font-semibold text-white bg-gray-500 rounded-full">
               {{ merchant.name.charAt(0) }}
@@ -81,7 +81,7 @@
           </button>
         </li>
       </ul>
-      <ul v-if="storeFetchMerchants.activeMerchant" class="space-y-2 border-t border-gray-200 dark:border-gray-700">
+      <ul v-if="storeActiveMerchant.merchant" class="space-y-2 border-t border-gray-200 dark:border-gray-700">
         <li>
           <nuxt-link type="button"
                      to="/clients"
@@ -110,7 +110,7 @@
                 </g>
               </svg>
               <span
-                  :class="[`${!storeFetchMerchants.activeMerchant ? 'text-gray-300': ''}`, 'ml-5 w-32 text-sm text-left font-semibold md:block']">Invoices</span>
+                  :class="[`${!storeActiveMerchant.merchant ? 'text-gray-300': ''}`, 'ml-5 w-32 text-sm text-left font-semibold md:block']">Invoices</span>
             </div>
           </nuxt-link>
         </li>
@@ -151,7 +151,9 @@ import api from "~/services/api";
 import {navigateTo} from "#app";
 import {useUser} from "~/stores/user";
 import {initTooltips} from "flowbite";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
+const storeActiveMerchant = useActiveMerchant()
 const storeFetchMerchants = useFetchMerchant()
 const storeFormMerchant = useFormMerchant()
 const storeUser = useUser()

@@ -6,6 +6,7 @@ import {useFetchMerchant} from "~/stores/merchant";
 import {Client} from "~/types/client";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {useFetchInvoice} from "~/stores/invoice";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 interface InvoiceItemField {
     id?: string
@@ -256,14 +257,14 @@ export const useFormInvoice = defineStore('formInvoice', {
             }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice created successfully')
 
-                const merchant = useFetchMerchant().activeMerchant
+                const merchant = useActiveMerchant().merchant
                 if (merchant) {
                     merchant.latest_invoice_number += 1
                     await api.updateDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', merchant?.$id, {
                         latest_invoice_number: merchant.latest_invoice_number
                     })
 
-                    useFetchMerchant().setActiveMerchant(merchant, true)
+                    useActiveMerchant().setActiveMerchant(merchant, true)
                     this.setNumber(merchant.latest_invoice_number)
                 }
 

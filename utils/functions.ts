@@ -15,7 +15,16 @@ export const formatIDR = (value: number | null) => {
     return formatted.replace(/\s/g, '')
 }
 
-export const formatDate = (date: string) => {
+export const parseDate = (date: string) => {
+    const d = new Date(date)
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} - ${d.getHours()}:${d.getMinutes()}`
+}
+
+export const formatDate = (date: Date | undefined | null) => {
+    if (!date) {
+        return ''
+    }
+
     const d = new Date(date)
     return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} - ${d.getHours()}:${d.getMinutes()}`
 }

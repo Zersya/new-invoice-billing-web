@@ -119,7 +119,9 @@
 import {Dropdown, initDropdowns} from "flowbite";
 import {useFormMerchant} from '~/stores/merchant/form';
 import {useFetchMerchant} from "~/stores/merchant";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
+const storeActiveMerchant = useActiveMerchant()
 const storeForm = useFormMerchant()
 const storeFetch = useFetchMerchant()
 
@@ -170,7 +172,7 @@ async function onSubmit() {
     const merchant = storeFetch.listMerchant.find((merchant) => merchant.$id === merchantId)
 
     if (merchant)
-      storeFetch.setActiveMerchant(merchant, true)
+      storeActiveMerchant.setActiveMerchant(merchant, true)
   }
 
   emit('form-closed')
@@ -178,15 +180,16 @@ async function onSubmit() {
 }
 
 async function onDelete() {
+  const merchant = storeActiveMerchant.merchant
   await storeForm.onSubmitDelete()
   await storeFetch.fetchMerchants()
 
 
-  if (storeForm.id === storeFetch.activeMerchant?.$id) {
+  if (storeForm.id === merchant?.$id) {
     if (storeFetch.listMerchant.length > 0) {
-      storeFetch.setActiveMerchant(storeFetch.listMerchant[0])
+      storeActiveMerchant.setActiveMerchant(storeFetch.listMerchant[0])
     } else if (storeFetch.listMerchant.length === 0) {
-      storeFetch.setActiveMerchant(null)
+      storeActiveMerchant.setActiveMerchant(null)
       navigateTo('/dashboard')
     }
   }
@@ -199,7 +202,7 @@ function setActiveMerchant() {
   const merchant = storeFetch.listMerchant.find((merchant) => merchant.$id === storeForm.id)
 
   if (merchant) {
-    storeFetch.setActiveMerchant(merchant)
+    storeActiveMerchant.setActiveMerchant(merchant)
 
     emit('form-closed')
   }

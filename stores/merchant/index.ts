@@ -2,11 +2,11 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
 import {Merchant} from '~/types/merchant';
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 interface MerchantState {
     listMerchant: Merchant[]
     isLoadingFetch: boolean
-    activeMerchant: Merchant | null
 
 }
 
@@ -14,16 +14,8 @@ export const useFetchMerchant = defineStore('fetchMerchant', {
     state: (): MerchantState => ({
         listMerchant: [],
         isLoadingFetch: true,
-        activeMerchant: null
     }),
     actions: {
-        setActiveMerchant(merchant: Merchant | null, initialLoad = false) {
-            this.activeMerchant = merchant
-
-            if (!initialLoad) {
-                useNuxtApp().$toast.showSuccess('Merchant has been selected')
-            }
-        },
         async fetchMerchants(isInitial = false) {
             this.isLoadingFetch = true
 
@@ -36,20 +28,20 @@ export const useFetchMerchant = defineStore('fetchMerchant', {
                 Query.equal('owner_id', ownerId),
             ])
                 .then((response) => {
+                    const storeActiveMerchant = useActiveMerchant()
                     this.listMerchant = response.documents as Merchant[]
                     if (this.listMerchant.length > 0 && isInitial) {
-                        this.setActiveMerchant(this.listMerchant[0], true)
+                        storeActiveMerchant.setActiveMerchant(this.listMerchant[0], true)
                     }
 
-                    if (this.activeMerchant) {
-                        const foundMerchant = this.listMerchant.find(merchant => merchant.$id === this.activeMerchant?.$id)
+                    if (storeActiveMerchant.merchant) {
+                        const foundMerchant = this.listMerchant.find(merchant => merchant.$id === storeActiveMerchant.merchant?.$id)
                         if (foundMerchant) {
-                            this.setActiveMerchant(foundMerchant)
+                            storeActiveMerchant.setActiveMerchant(foundMerchant)
                         } else {
-                            this.setActiveMerchant(null)
+                            storeActiveMerchant.setActiveMerchant(null)
                         }
                     }
-
 
 
                 }).catch((reason) => {

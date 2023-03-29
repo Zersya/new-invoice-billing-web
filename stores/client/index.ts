@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
 import {Client} from '~/types/client';
-import {useFetchMerchant} from "~/stores/merchant";
+import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 
 interface ClientState {
     listClient: Client[]
@@ -17,12 +17,12 @@ export const useFetchClient = defineStore('fetchClient', {
     actions: {
         async fetchClientById(id: string): Promise<Client | null> {
 
-            const merchant = await useFetchMerchant().activeMerchant
+            const merchant = useActiveMerchant().merchant
             const merchantId = merchant?.$id
 
             if (!merchantId) {
                 useNuxtApp().$toast.showError('Merchant not found')
-                return
+                return null
             }
 
             const config = useRuntimeConfig();
@@ -41,12 +41,12 @@ export const useFetchClient = defineStore('fetchClient', {
         async fetchClients(searchKey?: string) {
             this.isLoadingFetch = true
 
-            const merchant = await useFetchMerchant().activeMerchant
+            const merchant = useActiveMerchant().merchant
             const merchantId = merchant?.$id
 
             if (!merchantId) {
                 useNuxtApp().$toast.showError('Merchant not found')
-                return
+                return null
             }
 
             const config = useRuntimeConfig();

@@ -55,6 +55,9 @@
         <th scope="col" class="px-6 py-3">
           Action
         </th>
+        <th scope="col" class="px-6 py-3">
+          Status
+        </th>
       </tr>
       </thead>
       <tbody>
@@ -81,6 +84,12 @@
                 class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
           <span @click="navigateNewTab(invoice)"
                 class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline ml-4">View</span>
+        </td>
+        <td class="px-6 py-4">
+          <span
+              :class="['px-2 py-1 font-semibold leading-tight rounded-sm', invoice.published_at ? 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100':'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100']">
+            {{ invoice.published_at ? 'Published' : 'Draft' }}
+          </span>
         </td>
       </tr>
       </tbody>

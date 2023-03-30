@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-6 my-14">
-    <div v-if="!storeFetchInvoice.isLoadingFetch" class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-md">
+    <div v-if="!storeFetchInvoice.isLoadingFetchDetail" class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-md">
       <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12">
           <div class="flex items-center mb-6">
@@ -73,7 +73,6 @@ import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 const route = useRoute()
 
 const storeActiveMerchant = useActiveMerchant()
-const storeFetchMerchants = useFetchMerchant()
 const storeFetchInvoice = useFetchInvoice()
 
 onMounted(() => {

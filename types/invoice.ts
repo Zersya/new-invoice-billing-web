@@ -6,6 +6,7 @@ export interface Invoice {
     client_id: string
     client_name: string
     merchant_id: string
+    published_at: Date | null
     $id: string
     $createdAt: string
     $updatedAt: string

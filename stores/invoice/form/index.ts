@@ -25,6 +25,7 @@ interface FormInvoiceState {
     due_date: Date | null
     client_id: string
     merchant_id: string
+    published_at: Date | null
     client: Client | null
     items: InvoiceItemField[]
     isLoadingSubmit: boolean
@@ -40,6 +41,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         due_date: null,
         client_id: '',
         merchant_id: '',
+        published_at: null,
         client: null,
         items: [],
         isLoadingSubmit: false,
@@ -113,6 +115,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.due_date = invoice.due_date
             this.client_id = invoice.client_id
             this.merchant_id = invoice.merchant_id
+            this.published_at = invoice.published_at
         },
         setNumber(number?: number) {
             const date = new Date()
@@ -140,12 +143,17 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.merchant_id = merchant_id
         },
 
+        setPublishedAt(published_at: Date) {
+            this.published_at = published_at
+        },
+
         reset() {
             this.id = ''
             this.number = ''
             this.description = ''
             this.client_id = ''
             this.merchant_id = ''
+            this.published_at = null
             this.due_date = null
             this.isLoadingSubmit = false
             this.items = []
@@ -193,6 +201,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 due_date: this.due_date,
                 client_id: this.client_id,
                 client_name: this.client?.name,
+                published_at: this.published_at,
             }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice updated successfully')
 
@@ -252,6 +261,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 client_id: this.client_id,
                 client_name: this.client?.name,
                 merchant_id: this.merchant_id,
+                published_at: this.published_at,
                 issued_date: dateNow,
                 due_date: this.due_date,
             }).then(async (doc) => {

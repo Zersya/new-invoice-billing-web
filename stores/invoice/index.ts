@@ -9,6 +9,7 @@ interface InvoiceState {
     listInvoice: Invoice[]
     listInvoiceItem: InvoiceItem[]
     isLoadingFetch: boolean
+    isLoadingFetchDetail: boolean
     invoiceDetail: Invoice | null
 }
 
@@ -17,6 +18,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
         listInvoice: [],
         listInvoiceItem: [],
         isLoadingFetch: false,
+        isLoadingFetchDetail: false,
         invoiceDetail: null
     }),
     actions: {
@@ -55,7 +57,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
         },
 
         async fetchInvoice(invoiceId: string) {
-            this.isLoadingFetch = true
+            this.isLoadingFetchDetail = true
 
             const config = useRuntimeConfig();
 
@@ -68,7 +70,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
                         }
                     }
                 ).finally(() => {
-                    this.isLoadingFetch = false
+                    this.isLoadingFetchDetail = false
                 })
         },
 

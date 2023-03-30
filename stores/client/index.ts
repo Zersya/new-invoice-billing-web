@@ -3,6 +3,7 @@ import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
 import {Client} from '~/types/client';
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {showToast} from "~/utils/toast";
 
 interface ClientState {
     listClient: Client[]
@@ -21,7 +22,7 @@ export const useFetchClient = defineStore('fetchClient', {
             const merchantId = merchant?.$id
 
             if (!merchantId) {
-                useNuxtApp().$toast.showError('Merchant not found')
+                showToast.error('Merchant not found')
                 return null
             }
 
@@ -32,7 +33,7 @@ export const useFetchClient = defineStore('fetchClient', {
                 return doc as Client
             } catch (reason) {
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
                 return null
@@ -45,7 +46,7 @@ export const useFetchClient = defineStore('fetchClient', {
             const merchantId = merchant?.$id
 
             if (!merchantId) {
-                useNuxtApp().$toast.showError('Merchant not found')
+                showToast.error('Merchant not found')
                 return null
             }
 
@@ -64,7 +65,7 @@ export const useFetchClient = defineStore('fetchClient', {
                     this.listClient = response.documents as Client[]
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
-                            useNuxtApp().$toast.showError(reason.message)
+                            showToast.error(reason.message)
                         }
                     }
                 ).finally(() => {

@@ -4,6 +4,7 @@ import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {useLogin} from "~/stores/login";
 import {useUser} from "~/stores/user";
+import {showToast} from "~/utils/toast";
 
 export const useRegister = defineStore('register', {
     state: () => ({
@@ -59,7 +60,7 @@ export const useRegister = defineStore('register', {
 
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {

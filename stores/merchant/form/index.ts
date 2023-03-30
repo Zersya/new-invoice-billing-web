@@ -3,6 +3,7 @@ import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Merchant} from "~/types/merchant";
 import {useFetchMerchant} from "~/stores/merchant";
+import {showToast} from "~/utils/toast";
 
 interface FormState {
     id?: string
@@ -74,7 +75,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             try {
                 this.tax = Number(tax)
             } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
+                showToast.error('Invalid tax value')
             }
         },
 
@@ -111,11 +112,11 @@ export const useFormMerchant = defineStore('formMerchant', {
             const config = useRuntimeConfig();
 
             await api.deleteDocument(config.public.databaseID, '63f38fe4d3a2cef4af25', this.id).then((_) => {
-                useNuxtApp().$toast.showSuccess('Merchant deleted successfully')
+                showToast.success('Merchant deleted successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -134,7 +135,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             try {
                 cvtTax = Number(this.tax) / 100
             } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
+                showToast.error('Invalid tax value')
             }
 
             const config = useRuntimeConfig();
@@ -148,11 +149,11 @@ export const useFormMerchant = defineStore('formMerchant', {
                 tax: cvtTax,
                 merchant_code: this.merchantCode,
             }).then((_) => {
-                useNuxtApp().$toast.showSuccess('Merchant updated successfully')
+                showToast.success('Merchant updated successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -172,7 +173,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             try {
                 cvtTax = Number(this.tax) / 100
             } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
+                showToast.error('Invalid tax value')
             }
 
             const responseAccount = await api.getAccount()
@@ -190,13 +191,13 @@ export const useFormMerchant = defineStore('formMerchant', {
                 owner_id: responseAccount.$id,
                 latest_invoice_number: this.invoiceNumber
             }).then((doc) => {
-                useNuxtApp().$toast.showSuccess('Merchant created successfully')
+                showToast.success('Merchant created successfully')
 
                 return doc.$id
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {

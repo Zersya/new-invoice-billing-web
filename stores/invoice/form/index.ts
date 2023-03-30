@@ -7,6 +7,7 @@ import {Client} from "~/types/client";
 import {useFormMerchant} from "~/stores/merchant/form";
 import {useFetchInvoice} from "~/stores/invoice";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {showToast} from "~/utils/toast";
 
 interface InvoiceItemField {
     id?: string
@@ -177,7 +178,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             const config = useRuntimeConfig();
 
             await api.deleteDocument(config.public.databaseID, '6418753f5e769294335b', this.id).then(async (_) => {
-                useNuxtApp().$toast.showSuccess('Invoice deleted successfully')
+                showToast.success('Invoice deleted successfully')
 
                 for (const item of this.items) {
                     await this.deleteInvoiceItem(item?.id)
@@ -186,7 +187,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -212,7 +213,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 published_at: this.published_at,
                 issued_date: this.issued_date,
             }).then(async (doc) => {
-                useNuxtApp().$toast.showSuccess('Invoice updated successfully')
+                showToast.success('Invoice updated successfully')
 
                 for (const item of this.items) {
                     await this.updateInvoiceItem(item, doc.$id)
@@ -245,7 +246,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -273,7 +274,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 issued_date: this.issued_date,
                 due_date: this.due_date,
             }).then(async (doc) => {
-                useNuxtApp().$toast.showSuccess('Invoice created successfully')
+                showToast.success('Invoice created successfully')
 
                 const merchant = useActiveMerchant().merchant
                 if (merchant) {
@@ -293,7 +294,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -306,7 +307,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             try {
                 cvtTax = Number(item.tax) / 100
             } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
+                showToast.error('Invalid tax value')
             }
 
             const config = useRuntimeConfig();
@@ -320,11 +321,11 @@ export const useFormInvoice = defineStore('formInvoice', {
                 tax: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
-                useNuxtApp().$toast.showSuccess('Invoice item created successfully')
+                showToast.success('Invoice item created successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
             })
         },
@@ -336,7 +337,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             try {
                 cvtTax = Number(item.tax) / 100
             } catch (e) {
-                useNuxtApp().$toast.showError('Invalid tax value')
+                showToast.error('Invalid tax value')
             }
 
             const config = useRuntimeConfig();
@@ -350,11 +351,11 @@ export const useFormInvoice = defineStore('formInvoice', {
                 tax: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
-                useNuxtApp().$toast.showSuccess('Invoice item updated successfully')
+                showToast.success('Invoice item updated successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
             })
         },
@@ -365,11 +366,11 @@ export const useFormInvoice = defineStore('formInvoice', {
             const config = useRuntimeConfig();
 
             await api.deleteDocument(config.public.databaseID, '641af3a7562c2d9f717c', itemId).then((_) => {
-                useNuxtApp().$toast.showSuccess('Invoice item deleted successfully')
+                showToast.success('Invoice item deleted successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
             })
         }

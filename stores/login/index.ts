@@ -3,6 +3,7 @@ import {navigateTo} from "#app";
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {useUser} from "~/stores/user";
+import {showToast} from "~/utils/toast";
 
 export const useLogin = defineStore('login', {
     state: () => ({
@@ -50,7 +51,7 @@ export const useLogin = defineStore('login', {
             }).catch((e) => {
 
                 if (e instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(e.message)
+                    showToast.error(e.message)
                 }
 
                 console.log(e)

@@ -1,4 +1,4 @@
-export const useToast = defineStore('root', {
+export const useToast = defineStore('toast', {
     state: () => ({
         isToastError: false,
         isToastVisible: false,

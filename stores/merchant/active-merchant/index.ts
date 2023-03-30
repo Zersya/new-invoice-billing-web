@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import {Merchant} from '~/types/merchant';
+import {showToast} from "~/utils/toast";
 
 interface ActiveMerchantState {
     merchant: Merchant | null
@@ -14,7 +15,7 @@ export const useActiveMerchant = defineStore('active-merchant', {
             this.merchant = merchant
 
             if (!initialLoad) {
-                useNuxtApp().$toast.showSuccess('Merchant has been selected')
+                showToast.success('Merchant has been selected')
             }
         }
     },

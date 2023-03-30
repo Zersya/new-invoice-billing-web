@@ -3,6 +3,7 @@ import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Client} from "~/types/client";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {showToast} from "~/utils/toast";
 
 interface FormClientState {
     id?: string
@@ -65,11 +66,11 @@ export const useFormClient = defineStore('formClient', {
             const config = useRuntimeConfig();
 
             await api.deleteDocument(config.public.databaseID, '63fb7883dfeb4195d567', this.id).then((_) => {
-                useNuxtApp().$toast.showSuccess('Client deleted successfully')
+                showToast.success('Client deleted successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -91,11 +92,11 @@ export const useFormClient = defineStore('formClient', {
                 email: this.email,
                 tags: this.tags,
             }).then((_) => {
-                useNuxtApp().$toast.showSuccess('Client updated successfully')
+                showToast.success('Client updated successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {
@@ -121,11 +122,11 @@ export const useFormClient = defineStore('formClient', {
                 tags: this.tags,
                 merchant_id: merchant?.$id,
             }).then((_) => {
-                useNuxtApp().$toast.showSuccess('Client created successfully')
+                showToast.success('Client created successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {
-                    useNuxtApp().$toast.showError(reason.message)
+                    showToast.error(reason.message)
                 }
 
             }).finally(() => {

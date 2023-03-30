@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException, Models} from "appwrite";
 import {navigateTo} from "#app";
+import {showToast} from "~/utils/toast";
 
 export const useUser = defineStore('user', {
     state: () => ({
@@ -21,7 +22,7 @@ export const useUser = defineStore('user', {
             if (!this.account?.emailVerification) {
                 await api.verifyEmail().catch((reason) => {
                     if (reason instanceof AppwriteException) {
-                        useNuxtApp().$toast.showError(reason.message)
+                        showToast.error(reason.message)
                     }
                 })
             }

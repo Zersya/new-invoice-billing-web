@@ -3,6 +3,7 @@ import api from "~/services/api";
 import {AppwriteException, Query} from "appwrite";
 import {Merchant} from '~/types/merchant';
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {showToast} from "~/utils/toast";
 
 interface MerchantState {
     listMerchant: Merchant[]
@@ -46,7 +47,7 @@ export const useFetchMerchant = defineStore('fetchMerchant', {
 
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
-                            useNuxtApp().$toast.showError(reason.message)
+                            showToast.error(reason.message)
                         }
                     }
                 ).finally(() => {

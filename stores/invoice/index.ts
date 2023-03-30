@@ -4,6 +4,7 @@ import {AppwriteException, Query} from "appwrite";
 import {Invoice, InvoiceItem} from '~/types/invoice';
 import {useFetchMerchant} from "~/stores/merchant";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {showToast} from "~/utils/toast";
 
 interface InvoiceState {
     listInvoice: Invoice[]
@@ -29,7 +30,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
             const merchantId = merchant?.$id
 
             if (!merchantId) {
-                useNuxtApp().$toast.showError('Merchant not found')
+                showToast.error('Merchant not found')
                 return
             }
 
@@ -48,7 +49,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
                     this.listInvoice = response.documents as Invoice[]
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
-                            useNuxtApp().$toast.showError(reason.message)
+                            showToast.error(reason.message)
                         }
                     }
                 ).finally(() => {
@@ -66,7 +67,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
                     this.invoiceDetail = response as Invoice
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
-                            useNuxtApp().$toast.showError(reason.message)
+                            showToast.error(reason.message)
                         }
                     }
                 ).finally(() => {
@@ -88,7 +89,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
                     this.listInvoiceItem = response.documents as InvoiceItem[]
                 }).catch((reason) => {
                         if (reason instanceof AppwriteException) {
-                            useNuxtApp().$toast.showError(reason.message)
+                            showToast.error(reason.message)
                         }
                     }
                 ).finally(() => {

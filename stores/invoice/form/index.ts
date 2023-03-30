@@ -26,6 +26,7 @@ interface FormInvoiceState {
     client_id: string
     merchant_id: string
     published_at: Date | null
+    issued_date: Date | null
     client: Client | null
     items: InvoiceItemField[]
     isLoadingSubmit: boolean
@@ -42,6 +43,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         client_id: '',
         merchant_id: '',
         published_at: null,
+        issued_date: null,
         client: null,
         items: [],
         isLoadingSubmit: false,
@@ -116,6 +118,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.client_id = invoice.client_id
             this.merchant_id = invoice.merchant_id
             this.published_at = invoice.published_at
+            this.issued_date = invoice.issued_date
         },
         setNumber(number?: number) {
             const date = new Date()
@@ -147,6 +150,10 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.published_at = published_at
         },
 
+        setIssuedDate(issued_date: Date) {
+            this.issued_date = issued_date
+        },
+
         reset() {
             this.id = ''
             this.number = ''
@@ -154,6 +161,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.client_id = ''
             this.merchant_id = ''
             this.published_at = null
+            this.issued_date = null
             this.due_date = null
             this.isLoadingSubmit = false
             this.items = []
@@ -202,6 +210,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 client_id: this.client_id,
                 client_name: this.client?.name,
                 published_at: this.published_at,
+                issued_date: this.issued_date,
             }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice updated successfully')
 
@@ -251,7 +260,6 @@ export const useFormInvoice = defineStore('formInvoice', {
             }
 
             this.isLoadingSubmit = true
-            const dateNow = new Date()
 
             const config = useRuntimeConfig();
 
@@ -262,7 +270,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 client_name: this.client?.name,
                 merchant_id: this.merchant_id,
                 published_at: this.published_at,
-                issued_date: dateNow,
+                issued_date: this.issued_date,
                 due_date: this.due_date,
             }).then(async (doc) => {
                 useNuxtApp().$toast.showSuccess('Invoice created successfully')

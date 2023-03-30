@@ -50,6 +50,9 @@
           Client
         </th>
         <th scope="col" class="px-6 py-3">
+          Issued Date
+        </th>
+        <th scope="col" class="px-6 py-3">
           Due Date
         </th>
         <th scope="col" class="px-6 py-3">
@@ -75,6 +78,9 @@
         </th>
         <td class="px-6 py-4">
           {{ invoice.client_name }}
+        </td>
+        <td class="px-6 py-4">
+          {{ invoice.issued_date ? parseDate(invoice.issued_date ?? '') : '' }}
         </td>
         <td class="px-6 py-4">
           {{ parseDate(invoice.due_date ?? '') }}

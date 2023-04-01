@@ -3,7 +3,7 @@ export const formatIDR = (value: number | null) => {
         style: 'currency',
         currency: 'IDR',
         currencyDisplay: 'symbol',
-        maximumFractionDigits: 2,
+        maximumFractionDigits: 0,
         useGrouping: true
     })
 

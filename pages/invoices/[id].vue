@@ -1,11 +1,15 @@
 <template>
-  <div class="container mx-auto px-6 my-14">
+  <form-payment-method :invoice-id="invoiceId"  :is-modal-open="isModalPaymentMethodOpen" @form-closed="isModalPaymentMethodOpen = false"/>
+  <div class="container mx-auto px-6 my-14 subpixel-antialiased">
     <div v-if="!storeFetchInvoice.isLoadingFetchDetail" class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-md">
       <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12">
           <div class="flex items-center mb-6">
             <h1 class="text-2xl font-semibold uppercase tracking-wide text-gray-900">Invoice</h1>
-            <span class="ml-4 px-4 py-1 text-xs leading-4 uppercase tracking-wider font-semibold bg-indigo-500 text-white rounded-md">#{{ invoice?.number }}</span>
+            <span
+                class="ml-4 px-4 py-1 text-xs leading-4 uppercase tracking-wider font-semibold bg-primary-500 text-white rounded-md">#{{
+                invoice?.number
+              }}</span>
             <div class="ml-auto text-right">
               <p class="text-xs leading-4">{{ formatDate(invoice?.issued_date) }}</p>
               <p class="text-xs leading-4 font-semibold">Due date: {{ formatDate(invoice?.due_date) }}</p>
@@ -14,7 +18,9 @@
         </div>
         <div class="col-span-6">
           <p class="my-1 text-gray-700 font-semibold leading-5">{{ merchant?.name }}</p>
-          <p class="my-1 text-gray-600 leading-5">Phone: {{merchant?.phone_country_code}}{{ merchant?.phone_number }}</p>
+          <p class="my-1 text-gray-600 leading-5">Phone: {{ merchant?.phone_country_code }}{{
+              merchant?.phone_number
+            }}</p>
         </div>
         <div class="col-span-6">
           <p class="my-1 text-gray-700 font-semibold leading-5">{{ invoice?.client_name }}</p>
@@ -39,7 +45,7 @@
             <td>{{ item.rates_type }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ formatIDR(item.price) }}</td>
-            <td>{{ item.vat * 100 }}%</td>
+            <td>{{ formatIDR(item.vat * (item.price * item.quantity)) }} ( {{ item.vat * 100 }}% )</td>
             <td>{{ formatIDR(item.subtotal) }}</td>
           </tr>
           </tbody>
@@ -47,7 +53,9 @@
       </div>
       <div class="mt-6 text-right">
         <p>Total: <span class="font-semibold">{{ formatIDR(total) }}</span></p>
-        <p>Payment Method: <span class="font-semibold">{{ paymentMethod }}</span></p>
+        <p>Payment Method: <span
+            class="hover:cursor-pointer text-primary-500 font-semibold underline decoration-primary-100"
+            @click="isModalPaymentMethodOpen = true">{{ storePaymentMethod.type ? storePaymentMethod.type : 'Select' }}</span></p>
       </div>
       <div class="mt-8 text-center">
         <p class="text-gray-700 font-semibold">{{ invoice?.client_name }}</p>
@@ -65,22 +73,31 @@
 import {useFetchInvoice} from "~/stores/invoice";
 import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 import {Invoice, InvoiceItem} from "~/types/invoice";
-import {ComputedRef} from "vue";
+import {ComputedRef, Ref} from "vue";
 import {useFetchMerchant} from "~/stores/merchant";
 import {Merchant} from "~/types/merchant";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
+import {usePaymentMethod} from "~/stores/invoice/payment-method";
 
 const route = useRoute()
 
+const isModalPaymentMethodOpen: Ref<boolean> = ref(false)
+
+const storePaymentMethod = usePaymentMethod()
 const storeActiveMerchant = useActiveMerchant()
 const storeFetchInvoice = useFetchInvoice()
 
+let invoiceId: string | null = null
+
 onMounted(() => {
-  const invoiceId = route.params.id
+  invoiceId = route.params.id as string
 
   if (invoiceId) {
-    storeFetchInvoice.fetchInvoice(invoiceId as string)
-    storeFetchInvoice.fetchInvoiceItems(invoiceId as string)
+    storeFetchInvoice.fetchInvoice(invoiceId).then(() => {
+
+      usePaymentMethod().setType(storeFetchInvoice.invoiceDetail?.payment_type)
+    })
+    storeFetchInvoice.fetchInvoiceItems(invoiceId)
   }
 })
 
@@ -88,7 +105,7 @@ const merchant: ComputedRef<Merchant | null> = computed(() => storeActiveMerchan
 const invoice: ComputedRef<Invoice | null> = computed(() => storeFetchInvoice.invoiceDetail)
 const invoiceItems: ComputedRef<InvoiceItem[]> = computed(() => storeFetchInvoice.listInvoiceItem)
 
-const total = computed(() => {
+const total: ComputedRef<number> = computed(() => {
   let total = 0
   invoiceItems.value.forEach(item => {
     total += item.subtotal

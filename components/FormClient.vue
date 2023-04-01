@@ -3,7 +3,7 @@
                  :extra-large="true"
                  name="form-client"
                  :title="storeForm.id ? 'Edit client' : 'Add client'"
-                 @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
+                 @modal-opened="emit('form-opened')" @modal-closed="emit('form-closed'); storeForm.reset()">
     <template #additional-action>
       <button v-if="storeForm.id"
               type="button"

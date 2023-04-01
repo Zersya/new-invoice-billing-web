@@ -102,17 +102,17 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
 
         setSubTotal(index: number) {
-            let taxAmount = (this.items[index].vat / 100) * (this.items[index].price * this.items[index].quantity);
+            const subTotal = this.items[index].price * this.items[index].quantity
+
+            let taxAmount = (this.items[index].vat / 100) * subTotal;
 
             // prevent taxAmount to be negative subtotal
             if (taxAmount > this.items[index].price * this.items[index].quantity) {
                 taxAmount = this.items[index].price * this.items[index].quantity
             }
 
-            const subTotal = this.items[index].price * this.items[index].quantity
-
             // 2 decimal points precision
-            this.items[index].subtotal = Math.round((subTotal + taxAmount) * 100) / 100
+            this.items[index].subtotal = subTotal + taxAmount
         },
 
         setInvoice(invoice: Invoice) {

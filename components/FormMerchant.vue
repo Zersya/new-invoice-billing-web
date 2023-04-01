@@ -3,7 +3,7 @@
                  :extra-large="true"
                  name="form-merchant"
                  :title="storeForm.id ? 'Edit merchant' : 'Add merchant'"
-                 @modal-opened="$emit('form-opened')" @modal-closed="$emit('form-closed'); storeForm.reset()">
+                 @modal-opened="emit('form-opened')" @modal-closed="emit('form-closed'); storeForm.reset()">
     <template #additional-action>
       <button v-if="storeForm.id"
               type="button"

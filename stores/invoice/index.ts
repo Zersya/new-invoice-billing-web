@@ -18,8 +18,8 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
     state: (): InvoiceState => ({
         listInvoice: [],
         listInvoiceItem: [],
-        isLoadingFetch: false,
-        isLoadingFetchDetail: false,
+        isLoadingFetch: true,
+        isLoadingFetchDetail: true,
         invoiceDetail: null
     }),
     actions: {

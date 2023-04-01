@@ -75,7 +75,8 @@
             <label for="due_date"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
             <vue-date-picker
-                v-model="storeForm.due_date" format="dd/MM/yyyy" :model-value="dueDate" :min-date="minDate" :max-date="maxDate"
+                v-model="storeForm.due_date" format="dd/MM/yyyy" :model-value="dueDate" :min-date="minDate"
+                :max-date="maxDate"
                 prevent-min-max-navigation @change="storeForm.setDueDate($event)"/>
           </div>
           <div>
@@ -237,17 +238,23 @@
           </table>
         </div>
 
-        <general-button v-if="isVisibleAction" :is-loading="storeForm.isLoadingSubmit"
-                        :disabled="!storeForm.isFormValid || storeForm.isLoadingPublish" type="submit"
-                        class="mt-4">
-          {{ storeForm.id ? 'Save' : 'Create' }}
-        </general-button>
-        <general-button v-if="isVisibleAction" outlined :is-loading="storeForm.isLoadingPublish"
-                        :disabled="!storeForm.isFormValid && storeForm.isLoadingPublish" type="button"
-                        class="mt-4"
-                        @click="onSubmitPublish">
-          {{ storeForm.id ? 'Publish' : 'Create & Publish' }}
-        </general-button>
+        <div v-if="storeForm.isLoadingSubmit || storeForm.isLoadingPublish" class="flex justify-center h-24">
+          <general-spinner-loading class="mt-auto"/>
+        </div>
+
+        <div v-else class="h-24">
+          <general-button v-if="isVisibleAction" :is-loading="storeForm.isLoadingSubmit"
+                          :disabled="!storeForm.isFormValid" type="submit"
+                          class="mt-4">
+            {{ storeForm.id ? 'Save' : 'Create' }}
+          </general-button>
+          <general-button v-if="isVisibleAction" outlined :is-loading="storeForm.isLoadingPublish"
+                          :disabled="!storeForm.isFormValid" type="button"
+                          class="mt-4"
+                          @click="onSubmitPublish">
+            {{ storeForm.id ? 'Publish' : 'Create & Publish' }}
+          </general-button>
+        </div>
       </form>
     </template>
   </general-modal>

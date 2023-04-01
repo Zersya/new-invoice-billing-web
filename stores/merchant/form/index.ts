@@ -2,7 +2,6 @@ import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
 import {Merchant} from "~/types/merchant";
-import {useFetchMerchant} from "~/stores/merchant";
 import {showToast} from "~/utils/toast";
 
 interface FormState {
@@ -12,7 +11,7 @@ interface FormState {
     address?: string
     phoneCountry?: string
     phone?: string
-    tax?: number
+    vat?: number
     merchantCode?: string
     invoiceNumber: number
     isLoadingSubmit: boolean
@@ -28,7 +27,7 @@ export const useFormMerchant = defineStore('formMerchant', {
         address: '',
         phoneCountry: '62',
         phone: '',
-        tax: 0,
+        vat: 0,
         merchantCode: '',
         invoiceNumber: 1,
         isLoadingSubmit: false,
@@ -47,7 +46,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.address = merchant.address
             this.phoneCountry = merchant.phone_country_code
             this.phone = merchant.phone_number
-            this.tax = merchant.tax * 100
+            this.vat = merchant.vat * 100
             this.merchantCode = merchant.merchant_code
         },
         setName(name: string) {
@@ -71,18 +70,16 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.phone = phone
         },
 
-        setTax(tax: string) {
+        setTax(vat: string) {
             try {
-                this.tax = Number(tax)
+                this.vat = Number(vat)
             } catch (e) {
-                showToast.error('Invalid tax value')
+                showToast.error('Invalid vat value')
             }
         },
 
         setMerchantCode() {
-            const code = this.name?.replace(/\s/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 1000000)
-
-            this.merchantCode = code
+            this.merchantCode = this.name?.replace(/\s/g, '-').toLowerCase() + '-' + Math.floor(Math.random() * 1000000)
         },
 
         setInvoiceNumber(invoiceNumber: number) {
@@ -96,7 +93,7 @@ export const useFormMerchant = defineStore('formMerchant', {
             this.address = ''
             this.phoneCountry = '62'
             this.phone = ''
-            this.tax = 0
+            this.vat = 0
             this.merchantCode = ''
             this.invoiceNumber = 1
             this.isLoadingSubmit = false
@@ -133,9 +130,9 @@ export const useFormMerchant = defineStore('formMerchant', {
 
             let cvtTax: number = 0
             try {
-                cvtTax = Number(this.tax) / 100
+                cvtTax = Number(this.vat) / 100
             } catch (e) {
-                showToast.error('Invalid tax value')
+                showToast.error('Invalid vat value')
             }
 
             const config = useRuntimeConfig();
@@ -146,7 +143,7 @@ export const useFormMerchant = defineStore('formMerchant', {
                 address: this.address,
                 phone_country_code: this.phoneCountry,
                 phone_number: this.phone,
-                tax: cvtTax,
+                vat: cvtTax,
                 merchant_code: this.merchantCode,
             }).then((_) => {
                 showToast.success('Merchant updated successfully')
@@ -171,9 +168,9 @@ export const useFormMerchant = defineStore('formMerchant', {
 
             let cvtTax: number = 0
             try {
-                cvtTax = Number(this.tax) / 100
+                cvtTax = Number(this.vat) / 100
             } catch (e) {
-                showToast.error('Invalid tax value')
+                showToast.error('Invalid vat value')
             }
 
             const responseAccount = await api.getAccount()
@@ -186,7 +183,7 @@ export const useFormMerchant = defineStore('formMerchant', {
                 address: this.address,
                 phone_country_code: this.phoneCountry,
                 phone_number: this.phone,
-                tax: cvtTax,
+                vat: cvtTax,
                 merchant_code: this.merchantCode,
                 owner_id: responseAccount.$id,
                 latest_invoice_number: this.invoiceNumber

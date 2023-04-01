@@ -189,7 +189,7 @@
                       :readonly="isPublished"
                       type="number"
                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="tax of item" :value="item.tax"
+                      placeholder="vat of item" :value="item.vat"
                       :min="0"
                       :max="100"
                       @input="storeForm.setItemTax(index, $event.target.value)"/>
@@ -219,7 +219,7 @@
                       name: '',
                       rates_type: 'fixed',
                       price: 0,
-                      tax: activeMerchantTax * 100,
+                      vat: activeMerchantTax * 100,
                       quantity: 0,
                       subtotal: 0
                     })"
@@ -289,7 +289,7 @@ const activeMerchantName = computed(() => {
 })
 
 const activeMerchantTax = computed(() => {
-  return useActiveMerchant().merchant?.tax
+  return useActiveMerchant().merchant?.vat
 })
 
 const minDate = computed(() => {
@@ -338,7 +338,7 @@ const onModalOpened = () => {
           name: item.name,
           rates_type: item.rates_type,
           price: item.price,
-          tax: item.tax * 100,
+          vat: item.vat * 100,
           quantity: item.quantity,
           subtotal: item.subtotal
         })

@@ -12,7 +12,7 @@ interface InvoiceItemField {
     name: string,
     quantity: number,
     price: number,
-    tax: number,
+    vat: number,
     subtotal: number,
     rates_type: string
 }
@@ -74,14 +74,14 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             this.setSubTotal(index)
         },
-        setItemTax(index: number, tax: number) {
-            if (tax > 100) {
-                tax = 100
-            } else if (tax < 0) {
-                tax = 0
+        setItemTax(index: number, vat: number) {
+            if (vat > 100) {
+                vat = 100
+            } else if (vat < 0) {
+                vat = 0
             }
 
-            this.items[index].tax = tax
+            this.items[index].vat = vat
 
             this.setSubTotal(index)
         },
@@ -99,7 +99,7 @@ export const useFormInvoice = defineStore('formInvoice', {
         },
 
         setSubTotal(index: number) {
-            let taxAmount = (this.items[index].tax / 100) * (this.items[index].price * this.items[index].quantity);
+            let taxAmount = (this.items[index].vat / 100) * (this.items[index].price * this.items[index].quantity);
 
             // prevent taxAmount to be negative subtotal
             if (taxAmount > this.items[index].price * this.items[index].quantity) {
@@ -122,6 +122,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.published_at = invoice.published_at
             this.issued_date = invoice.issued_date
         },
+
         setNumber(number?: number) {
             const date = new Date()
             const year = date.getFullYear().toString().substr(-2)
@@ -364,9 +365,9 @@ export const useFormInvoice = defineStore('formInvoice', {
         async submitInvoiceItem(item: InvoiceItemField, invoice_id: string) {
             let cvtTax: number = 0
             try {
-                cvtTax = Number(item.tax) / 100
+                cvtTax = Number(item.vat) / 100
             } catch (e) {
-                showToast.error('Invalid tax value')
+                showToast.error('Invalid vat value')
             }
 
             const config = useRuntimeConfig();
@@ -377,7 +378,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 rates_type: item.rates_type,
                 quantity: item.quantity,
                 price: item.price,
-                tax: cvtTax,
+                vat: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
                 showToast.success('Invoice item created successfully')
@@ -394,9 +395,9 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             let cvtTax: number = 0
             try {
-                cvtTax = Number(item.tax) / 100
+                cvtTax = Number(item.vat) / 100
             } catch (e) {
-                showToast.error('Invalid tax value')
+                showToast.error('Invalid vat value')
             }
 
             const config = useRuntimeConfig();
@@ -407,7 +408,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                 rates_type: item.rates_type,
                 quantity: item.quantity,
                 price: item.price,
-                tax: cvtTax,
+                vat: cvtTax,
                 subtotal: item.subtotal,
             }).then((_) => {
                 showToast.success('Invoice item updated successfully')

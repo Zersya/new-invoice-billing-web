@@ -39,7 +39,7 @@
             <td>{{ item.rates_type }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ formatIDR(item.price) }}</td>
-            <td>{{ item.tax * 100 }}%</td>
+            <td>{{ item.vat * 100 }}%</td>
             <td>{{ formatIDR(item.subtotal) }}</td>
           </tr>
           </tbody>

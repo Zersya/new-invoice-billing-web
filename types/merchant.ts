@@ -4,7 +4,7 @@ export interface Merchant {
     address: string
     phone_country_code: string
     phone_number: string
-    tax: number
+    vat: number
     merchant_code: string
     latest_invoice_number: number
     owner_id: string

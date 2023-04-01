@@ -22,7 +22,7 @@ export interface InvoiceItem {
     quantity: number
     subtotal: number
     price: number
-    tax: number
+    vat: number
     $id: string
     $createdAt: string
     $updatedAt: string

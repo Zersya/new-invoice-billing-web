@@ -63,6 +63,9 @@ export const useFormInvoice = defineStore('formInvoice', {
         removeItem(index: number) {
             this.items.splice(index, 1)
         },
+        setId(id: string) {
+            this.id = id
+        },
         setItemName(index: number, name: string) {
             this.items[index].name = name
         },
@@ -109,7 +112,7 @@ export const useFormInvoice = defineStore('formInvoice', {
             const subTotal = this.items[index].price * this.items[index].quantity
 
             // 2 decimal points precision
-            this.items[index].subtotal = Math.round((subTotal - taxAmount) * 100) / 100
+            this.items[index].subtotal = Math.round((subTotal + taxAmount) * 100) / 100
         },
 
         setInvoice(invoice: Invoice) {
@@ -351,6 +354,7 @@ export const useFormInvoice = defineStore('formInvoice', {
                     await this.submitInvoiceItem(item, doc.$id)
                 }
 
+                this.setId(doc.$id)
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {

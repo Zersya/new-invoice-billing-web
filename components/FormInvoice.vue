@@ -75,7 +75,7 @@
             <label for="due_date"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
             <vue-date-picker
-                v-model="storeForm.due_date" format="dd/MM/yyyy" :min-date="minDate" :max-date="maxDate"
+                v-model="storeForm.due_date" format="dd/MM/yyyy" :model-value="dueDate" :min-date="minDate" :max-date="maxDate"
                 prevent-min-max-navigation @change="storeForm.setDueDate($event)"/>
           </div>
           <div>
@@ -302,6 +302,12 @@ const maxDate = computed(() => {
   return date
 })
 
+const dueDate = computed(() => {
+  const date = new Date()
+  date.setDate(date.getDate() + 3)
+  return date
+})
+
 
 // computed with setter and getter
 const client = computed({
@@ -329,6 +335,7 @@ const onModalOpened = () => {
   if (!storeForm.id) {
     storeForm.setClient(null)
     storeForm.setNumber(latestInvoiceNumber)
+    storeForm.setDueDate(dueDate.value)
   } else {
     storeFetch.fetchInvoiceItems(storeForm.id).then(() => {
       for (const item of storeFetch.listInvoiceItem) {
@@ -360,7 +367,12 @@ async function onSubmit() {
 }
 
 async function onSubmitPublish() {
-  await storeForm.onSubmitPublish()
+  if (storeForm.id) {
+    await storeForm.onSubmitPublish()
+  } else {
+    await storeForm.onSubmitCreate()
+    await storeForm.onSubmitPublish()
+  }
 
   emit('form-closed')
 

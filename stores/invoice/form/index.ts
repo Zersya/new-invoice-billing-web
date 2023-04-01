@@ -1,10 +1,8 @@
 import {defineStore} from 'pinia'
 import api from "~/services/api";
 import {AppwriteException} from "appwrite";
-import {Invoice, InvoiceItem} from "~/types/invoice";
-import {useFetchMerchant} from "~/stores/merchant";
+import {Invoice} from "~/types/invoice";
 import {Client} from "~/types/client";
-import {useFormMerchant} from "~/stores/merchant/form";
 import {useFetchInvoice} from "~/stores/invoice";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 import {showToast} from "~/utils/toast";
@@ -32,7 +30,8 @@ interface FormInvoiceState {
     items: InvoiceItemField[]
     isLoadingSubmit: boolean
     isLoadingDelete: boolean
-
+    isLoadingArchive: boolean
+    isLoadingPublish: boolean
 }
 
 export const useFormInvoice = defineStore('formInvoice', {
@@ -48,7 +47,9 @@ export const useFormInvoice = defineStore('formInvoice', {
         client: null,
         items: [],
         isLoadingSubmit: false,
-        isLoadingDelete: false
+        isLoadingDelete: false,
+        isLoadingArchive: false,
+        isLoadingPublish: false
     }),
     getters: {
         isFormValid(): boolean {
@@ -168,6 +169,36 @@ export const useFormInvoice = defineStore('formInvoice', {
             this.items = []
         },
 
+
+        async onArchiveInvoice() {
+            if (!this.id) {
+                return
+            }
+
+            this.isLoadingArchive = true
+
+            const config = useRuntimeConfig();
+
+            await api.updateDocument(config.public.databaseID, '6418753f5e769294335b', this.id, {
+                archived_at: new Date()
+            }).then(async (_) => {
+                showToast.success('Invoice archived successfully')
+
+                for (const item of this.items) {
+                    await this.archiveInvoiceItem(item?.id)
+                }
+
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    showToast.error(reason.message)
+                }
+
+            }).finally(() => {
+                this.isLoadingArchive = false
+            })
+        },
+
         async onSubmitDelete() {
             if (!this.id) {
                 return
@@ -193,6 +224,34 @@ export const useFormInvoice = defineStore('formInvoice', {
             }).finally(() => {
                 this.isLoadingDelete = false
             })
+        },
+
+        async onSubmitPublish() {
+            if (!this.isFormValid || !this.id) {
+                return
+            }
+
+            this.isLoadingPublish = true
+
+            const config = useRuntimeConfig();
+
+            const date = new Date()
+
+            await api.updateDocument(config.public.databaseID, '6418753f5e769294335b', this.id, {
+                published_at: date,
+                issued_date: date,
+            }).then(async (_) => {
+                showToast.success('Invoice updated successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    showToast.error(reason.message)
+                }
+
+            }).finally(() => {
+                this.isLoadingPublish = false
+            })
+
         },
 
         async onSubmitUpdate() {
@@ -367,6 +426,23 @@ export const useFormInvoice = defineStore('formInvoice', {
 
             await api.deleteDocument(config.public.databaseID, '641af3a7562c2d9f717c', itemId).then((_) => {
                 showToast.success('Invoice item deleted successfully')
+            }).catch((reason) => {
+
+                if (reason instanceof AppwriteException) {
+                    showToast.error(reason.message)
+                }
+            })
+        },
+
+        async archiveInvoiceItem(itemId: string | undefined) {
+            if (!itemId) return
+
+            const config = useRuntimeConfig();
+
+            await api.updateDocument(config.public.databaseID, '641af3a7562c2d9f717c', itemId, {
+                archived_at: new Date()
+            }).then((_) => {
+                showToast.success('Invoice item archive successfully')
             }).catch((reason) => {
 
                 if (reason instanceof AppwriteException) {

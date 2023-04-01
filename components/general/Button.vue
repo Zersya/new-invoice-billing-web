@@ -1,7 +1,7 @@
 <template>
   <button :type="props.type"
           :disabled="props.disabled || props.isLoading"
-          :class="buttonClass()" @click="$emit('click')">
+          :class="buttonClass()">
     <SpinnerLoading v-if="props.isLoading" class="inline" loading-color="fill-primary-200" />
     <slot v-else />
   </button>

@@ -17,7 +17,7 @@
     </template>
     <template #additional-action>
       <div class="flex grow justify-between">
-        <button v-if="storeForm.id && !isPublished"
+        <button v-if="storeForm.id"
                 type="button"
                 class="text-red-400 bg-transparent hover:bg-red-200 hover:text-red-900 rounded-lg text-sm p-1.5 items-center dark:hover:bg-red-600 dark:hover:text-white"
                 @click="onDelete">
@@ -27,6 +27,18 @@
                   d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3H9M7 6h10v13H7V6m2 2v9h2V8H9m4 0v9h2V8h-2Z"/>
           </svg>
           <span class="sr-only">Delete invoice</span>
+        </button>
+
+        <button v-if="storeForm.id && isPublished"
+                type="button"
+                class="text-orange-400 bg-transparent hover:bg-orange-200 hover:text-orange-900 rounded-lg text-sm p-1.5 items-center dark:hover:bg-orange-600 dark:hover:text-white"
+                @click="onArchive">
+          <general-spinner-loading v-if="storeForm.isLoadingArchive" class="inline" loading-color="fill-primary-200"/>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor"
+                  d="M5 21q-.825 0-1.413-.588T3 19V6.5q0-.375.125-.675t.325-.575l1.4-1.7q.2-.275.5-.413T6 3h12q.35 0 .65.137t.5.413l1.4 1.7q.2.275.325.575T21 6.5V19q0 .825-.588 1.413T19 21H5Zm.4-15h13.2l-.85-1H6.25L5.4 6ZM12 18l4-4l-1.4-1.4l-1.6 1.6V10h-2v4.2l-1.6-1.6L8 14l4 4Z"/>
+          </svg>
+          <span class="sr-only">Archive invoice</span>
         </button>
       </div>
     </template>
@@ -55,7 +67,7 @@
                 class="flex-shrink-0 z-10 inline-flex w-full py-2.5 px-4 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600">
               <option :value="null">Please select the client</option>
               <option v-for="client in storeClients.listClient" :key="client.$id" :value="client">
-                <span>{{ client.name }}</span>
+                {{ client.name }}
               </option>
             </select>
           </div>
@@ -63,7 +75,8 @@
             <label for="due_date"
                    class="required-field block mb-2 text-sm font-medium text-gray-900 dark:text-white">Due Date</label>
             <vue-date-picker
-                v-model="storeForm.due_date" format="dd/MM/yyyy" @change="storeForm.setDueDate($event)"/>
+                v-model="storeForm.due_date" format="dd/MM/yyyy" :min-date="minDate" :max-date="maxDate"
+                prevent-min-max-navigation @change="storeForm.setDueDate($event)"/>
           </div>
           <div>
             <label for="description"
@@ -190,7 +203,7 @@
                 <!-- use filter toCurrency on nuxt 3 -->
                 {{ formatIDR(item.subtotal) }}
               </td>
-              <td class="px-6 py-4">
+              <td v-if="!isPublished" class="px-6 py-4">
                 <button type="button" class="font-medium text-red-600 dark:text-red-500 hover:underline"
                         @click="storeForm.removeItem(index)">Remove
                 </button>
@@ -225,12 +238,12 @@
         </div>
 
         <general-button v-if="isVisibleAction" :is-loading="storeForm.isLoadingSubmit"
-                        :disabled="!storeForm.isFormValid" type="submit"
+                        :disabled="!storeForm.isFormValid || storeForm.isLoadingPublish" type="submit"
                         class="mt-4">
           {{ storeForm.id ? 'Save' : 'Create' }}
         </general-button>
-        <general-button v-if="isVisibleAction" outlined :is-loading="storeForm.isLoadingSubmit"
-                        :disabled="!storeForm.isFormValid" type="button"
+        <general-button v-if="isVisibleAction" outlined :is-loading="storeForm.isLoadingPublish"
+                        :disabled="!storeForm.isFormValid && storeForm.isLoadingPublish" type="button"
                         class="mt-4"
                         @click="onSubmitPublish">
           {{ storeForm.id ? 'Publish' : 'Create & Publish' }}
@@ -271,13 +284,22 @@ const props = defineProps({
   },
 })
 
-
 const activeMerchantName = computed(() => {
   return useActiveMerchant().merchant?.name
 })
 
 const activeMerchantTax = computed(() => {
   return useActiveMerchant().merchant?.tax
+})
+
+const minDate = computed(() => {
+  return new Date()
+})
+
+const maxDate = computed(() => {
+  const date = new Date()
+  date.setDate(date.getDate() + 30)
+  return date
 })
 
 
@@ -337,16 +359,24 @@ async function onSubmit() {
   await storeFetch.fetchInvoices()
 }
 
-function onSubmitPublish() {
-  const date = new Date()
-  storeForm.setPublishedAt(date)
-  storeForm.setIssuedDate(date)
+async function onSubmitPublish() {
+  await storeForm.onSubmitPublish()
 
-  onSubmit()
+  emit('form-closed')
+
+  await storeFetch.fetchInvoices()
 }
 
 async function onDelete() {
   await storeForm.onSubmitDelete()
+
+  emit('form-closed')
+
+  await storeFetch.fetchInvoices()
+}
+
+async function onArchive() {
+  await storeForm.onArchiveInvoice()
 
   emit('form-closed')
 

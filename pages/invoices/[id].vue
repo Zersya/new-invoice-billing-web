@@ -110,6 +110,7 @@ onMounted(() => {
     const config = useRuntimeConfig();
     api.subscribeDocument(config.public.databaseID, '6418753f5e769294335b', invoiceId, (data) => {
       storeFetchInvoice.invoiceDetail = data.payload
+      storePaymentMethod.setType(data.payload.payment_type, data.payload.payment_subtype)
     })
   }
 })

@@ -1,9 +1,10 @@
 import {Client as Appwrite, Databases, Account} from "appwrite";
 import {Models} from "appwrite/src/models";
+import {RealtimeResponseEvent} from "appwrite/src/client";
 
 // Exporting some most commonly used functions
 let api = {
-    sdk: null as { database: Databases; account: Account } | null,
+    sdk: null as { database: Databases; account: Account, appwrite: Appwrite } | null,
 
     provider: () => {
         if (api.sdk) {
@@ -17,7 +18,7 @@ let api = {
 
         const account = new Account(appwrite);
         const database = new Databases(appwrite);
-        api.sdk = {database, account};
+        api.sdk = {database, account, appwrite};
 
         return api.sdk;
     },
@@ -103,6 +104,13 @@ let api = {
             .provider()
             .database.deleteDocument(databaseID, collectionID, documentID);
     },
+
+    // Subscribe a document
+    subscribeDocument: (databaseID: string, collectionID: string, documentID: string, callback: (data: RealtimeResponseEvent<any>) => void) => {
+        return api
+            .provider()
+            .appwrite.subscribe(`databases.${databaseID}.collections.${collectionID}.documents.${documentID}`, callback);
+    }
 };
 
 export default api;

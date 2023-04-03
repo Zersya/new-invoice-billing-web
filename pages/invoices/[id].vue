@@ -83,6 +83,7 @@ import {ComputedRef, Ref} from "vue";
 import {Merchant} from "~/types/merchant";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 import {usePaymentMethod} from "~/stores/invoice/payment-method";
+import api from "~/services/api";
 
 const route = useRoute()
 
@@ -106,6 +107,11 @@ onMounted(() => {
       usePaymentMethod().setType(paymentType, paymentSubtype)
     })
     storeFetchInvoice.fetchInvoiceItems(invoiceId)
+
+    const config = useRuntimeConfig();
+    api.subscribeDocument(config.public.databaseID, '6418753f5e769294335b', invoiceId, (data) => {
+      storeFetchInvoice.invoiceDetail = data.payload
+    })
   }
 })
 

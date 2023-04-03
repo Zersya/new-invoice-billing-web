@@ -54,12 +54,11 @@
       </div>
       <div class="mt-6 text-right">
         <p>Total: <span class="font-semibold">{{ formatIDR(total) }}</span></p>
-        <p class="mt-4">Payment Method: <span
+        <p class="mt-4 font-semibold">Paying with <span
             :class="['text-primary-500 font-semibold decoration-primary-100', payloadPaymentDurianpay ? '' : 'hover:cursor-pointer underline']"
             @click="payloadPaymentDurianpay ? {} :isModalPaymentMethodOpen = true">{{
             storePaymentMethod.type ? storePaymentMethod.type : 'Select'
-          }}</span></p>
-        <p>{{ invoice?.payment_subtype }}</p>
+          }} {{ invoice?.payment_subtype }}</span></p>
         <p class="font-semibold">{{ payloadPaymentDurianpay?.data.response.account_number }}</p>
       </div>
 

@@ -17,25 +17,32 @@
                 Account</label>
             </div>
             <div class="flex items-center ml-6 mb-4">
-              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-mandiri" type="radio" value="MANDIRI" name="payment-method-type"
+              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-mandiri" type="radio"
+                     value="MANDIRI" name="payment-method-type"
                      class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
               <label for="virtual-account-mandiri" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Mandiri</label>
             </div>
             <div class="flex items-center ml-6 mb-4">
-              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bca" type="radio" value="BCA" name="payment-method-type"
+              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bca" type="radio"
+                     value="BCA" name="payment-method-type"
                      class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-              <label for="virtual-account-bca" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BCA</label>
+              <label for="virtual-account-bca"
+                     class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BCA</label>
             </div>
             <div class="flex items-center ml-6 mb-4">
-              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bri" type="radio" value="BRI" name="payment-method-type"
+              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bri" type="radio"
+                     value="BRI" name="payment-method-type"
                      class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-              <label for="virtual-account-bri" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BRI</label>
+              <label for="virtual-account-bri"
+                     class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BRI</label>
             </div>
             <div class="flex items-center ml-6 mb-4">
-              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bsi" type="radio" value="BSI" name="payment-method-type"
+              <input v-model="method.subtype" :disabled="method.type !== 'VA'" id="virtual-account-bsi" type="radio"
+                     value="BSI" name="payment-method-type"
                      class="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               >
-              <label for="virtual-account-bsi" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BSI</label>
+              <label for="virtual-account-bsi"
+                     class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">BSI</label>
             </div>
             <div class="flex items-center">
               <input v-model="method.type" checked id="default-radio-2" type="radio" value="QRIS" name="payment-method"
@@ -90,15 +97,19 @@ const props = defineProps({
 })
 
 watch(method, (value) => {
- if(value.type === 'QRIS') {
-   method.value.subtype = null
- } else if(value.type === 'VA') {
-   method.value.subtype = 'MANDIRI'
- }
+  if (value.type === 'QRIS') {
+    method.value.subtype = null
+  } else if (value.type === 'VA') {
+    if (!value.subtype) {
+      method.value.subtype = 'MANDIRI'
+    } else {
+      method.value.subtype = value.subtype
+    }
+  }
 
- if(value.subtype) {
-   method.value.type = 'VA'
- }
+  if (value.subtype) {
+    method.value.type = 'VA'
+  }
 }, {deep: true, immediate: true})
 
 function onModalOpened() {

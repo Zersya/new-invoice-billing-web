@@ -38,6 +38,7 @@ export const useFetchInvoice = defineStore('fetchInvoice', {
 
             const queries = [
                 Query.equal('merchant_id', merchantId),
+                Query.orderDesc('$createdAt')
             ]
 
             if (searchKey) {

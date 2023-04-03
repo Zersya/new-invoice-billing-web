@@ -9,6 +9,8 @@ export interface Invoice {
     published_at: Date | null,
     payment_selected_at: Date | null,
     payment_type: string | null,
+    payment_subtype: string | null,
+    payload_payment_durianpay: string | null,
     $id: string
     $createdAt: string
     $updatedAt: string

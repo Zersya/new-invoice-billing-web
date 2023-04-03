@@ -1,5 +1,6 @@
 <template>
-  <form-payment-method :invoice-id="invoiceId"  :is-modal-open="isModalPaymentMethodOpen" @form-closed="isModalPaymentMethodOpen = false"/>
+  <form-payment-method :invoice-id="invoiceId" :is-modal-open="isModalPaymentMethodOpen"
+                       @form-closed="isModalPaymentMethodOpen = false"/>
   <div class="container mx-auto px-6 my-14 subpixel-antialiased">
     <div v-if="!storeFetchInvoice.isLoadingFetchDetail" class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-md">
       <div class="grid grid-cols-12 gap-6">
@@ -53,10 +54,15 @@
       </div>
       <div class="mt-6 text-right">
         <p>Total: <span class="font-semibold">{{ formatIDR(total) }}</span></p>
-        <p>Payment Method: <span
-            class="hover:cursor-pointer text-primary-500 font-semibold underline decoration-primary-100"
-            @click="isModalPaymentMethodOpen = true">{{ storePaymentMethod.type ? storePaymentMethod.type : 'Select' }}</span></p>
+        <p class="mt-4">Payment Method: <span
+            :class="['text-primary-500 font-semibold decoration-primary-100', payloadPaymentDurianpay ? '' : 'hover:cursor-pointer underline']"
+            @click="payloadPaymentDurianpay ? {} :isModalPaymentMethodOpen = true">{{
+            storePaymentMethod.type ? storePaymentMethod.type : 'Select'
+          }}</span></p>
+        <p>{{ invoice?.payment_subtype }}</p>
+        <p class="font-semibold">{{ payloadPaymentDurianpay?.data.response.account_number }}</p>
       </div>
+
       <div class="mt-8 text-center">
         <p class="text-gray-700 font-semibold">{{ invoice?.client_name }}</p>
         <p class="text-xs">Signature: ______________________________</p>
@@ -74,7 +80,6 @@ import {useFetchInvoice} from "~/stores/invoice";
 import SpinnerLoading from "~/components/general/SpinnerLoading.vue";
 import {Invoice, InvoiceItem} from "~/types/invoice";
 import {ComputedRef, Ref} from "vue";
-import {useFetchMerchant} from "~/stores/merchant";
 import {Merchant} from "~/types/merchant";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 import {usePaymentMethod} from "~/stores/invoice/payment-method";
@@ -95,7 +100,10 @@ onMounted(() => {
   if (invoiceId) {
     storeFetchInvoice.fetchInvoice(invoiceId).then(() => {
 
-      usePaymentMethod().setType(storeFetchInvoice.invoiceDetail?.payment_type)
+      const paymentType = storeFetchInvoice.invoiceDetail?.payment_type;
+      const paymentSubtype = storeFetchInvoice.invoiceDetail?.payment_subtype;
+
+      usePaymentMethod().setType(paymentType, paymentSubtype)
     })
     storeFetchInvoice.fetchInvoiceItems(invoiceId)
   }
@@ -104,6 +112,8 @@ onMounted(() => {
 const merchant: ComputedRef<Merchant | null> = computed(() => storeActiveMerchant.merchant)
 const invoice: ComputedRef<Invoice | null> = computed(() => storeFetchInvoice.invoiceDetail)
 const invoiceItems: ComputedRef<InvoiceItem[]> = computed(() => storeFetchInvoice.listInvoiceItem)
+
+const payloadPaymentDurianpay = computed(() => JSON.parse(JSON.parse(storeFetchInvoice.invoiceDetail?.payload_payment_durianpay!)))
 
 const total: ComputedRef<number> = computed(() => {
   let total = 0

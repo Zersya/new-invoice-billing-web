@@ -1,5 +1,6 @@
 <template>
   <form-client :is-modal-open="isModalFormClientOpen" @form-closed="isModalFormClientOpen = false"/>
+  <form-client-tags :is-modal-open="isModalFormClientTagsOpen" @form-closed="isModalFormClientTagsOpen = false"/>
   <div class="w-full">
     <div class="flex justify-between">
       <div class="pb-4 bg-white dark:bg-gray-900">
@@ -16,7 +17,7 @@
           <input v-model="searchKey" type="text" id="table-search"
                  class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  placeholder="Search for items"
-                  @change="searchClient">
+                 @change="searchClient">
         </div>
       </div>
 
@@ -42,7 +43,21 @@
           Email
         </th>
         <th scope="col" class="px-6 py-3">
-          Tags
+          Tags <span class="w-16 w-16 text-gray-400 dark:text-gray-300">
+          <button
+              data-tooltip-target="tooltip-tags">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path fill="currentColor"
+                    d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.713T12 11q-.425 0-.713.288T11 12v4q0 .425.288.713T12 17Zm0-8q.425 0 .713-.288T13 8q0-.425-.288-.713T12 7q-.425 0-.713.288T11 8q0 .425.288.713T12 9Zm0 13q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Zm0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20Zm0-8Z"
+              />
+            </svg>
+          </button>
+          <div id="tooltip-tags" role="tooltip"
+               class="lowercase absolute z-10 invisible inline-block px-3 py-2 text-sm text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Tags are used to group clients together
+            <div class="tooltip-arrow" data-popper-arrow></div>
+          </div>
+        </span>
         </th>
         <th scope="col" class="px-6 py-3">
           Verified
@@ -62,7 +77,11 @@
           {{ client.email }}
         </td>
         <td class="px-6 py-4">
-          {{ client.tags.join(', ') }}
+          <span v-if="client.tags.length === 0"
+                class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                @click="isModalFormClientTagsOpen = true; storeForm.setClient(client)">Add Tags..</span>
+          <span
+              v-else> {{ client.tags.join(', ') }}</span>
         </td>
         <td class="px-6 py-4">
           <span
@@ -71,7 +90,8 @@
           </span>
         </td>
         <td class="px-6 py-4">
-          <span @click="selectClient(client)" class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
+          <span @click="selectClient(client)"
+                class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</span>
         </td>
       </tr>
       </tbody>
@@ -84,11 +104,13 @@
 import {useFetchClient} from "~/stores/client";
 import {Client} from "~/types/client";
 import {useFormClient} from "~/stores/client/form";
+import {initTooltips} from "flowbite";
 
 const storeFetch = useFetchClient()
 const storeForm = useFormClient()
 
 const isModalFormClientOpen = ref(false)
+const isModalFormClientTagsOpen = ref(false)
 const searchKey = ref('')
 
 definePageMeta({
@@ -98,6 +120,7 @@ definePageMeta({
 });
 
 onMounted(() => {
+  initTooltips()
   storeFetch.fetchClients()
 })
 

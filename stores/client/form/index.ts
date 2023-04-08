@@ -80,6 +80,7 @@ export const useFormClient = defineStore('formClient', {
 
         async onSubmitUpdate() {
             if (!this.isFormValid || !this.id) {
+                showToast.error('Invalid form')
                 return
             }
 
@@ -107,6 +108,7 @@ export const useFormClient = defineStore('formClient', {
         async onSubmitCreate() {
 
             if (!this.isFormValid) {
+                showToast.error('Invalid form')
                 return
             }
 
@@ -133,6 +135,12 @@ export const useFormClient = defineStore('formClient', {
                 this.isLoadingSubmit = false
             })
         },
+
+        async onSubmitAddTag(tag: string) {
+            this.tags.push(tag)
+
+            await this.onSubmitUpdate()
+        }
 
     }
 })

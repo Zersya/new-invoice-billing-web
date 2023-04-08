@@ -1,6 +1,9 @@
 <template>
   <form-payment-method :invoice-id="invoiceId" :is-modal-open="isModalPaymentMethodOpen"
                        @form-closed="isModalPaymentMethodOpen = false"/>
+  <payment-tutorial :is-modal-open="isModalPaymentTutorialOpen"
+                    :payload-payment-durian-pay="payloadPaymentDurianPay"
+                    @form-closed="isModalPaymentTutorialOpen = false"/>
   <div class="container mx-auto px-6 my-14 subpixel-antialiased">
     <div v-if="!storeFetchInvoice.isLoadingFetchDetail" class="max-w-5xl mx-auto bg-white shadow-lg p-6 rounded-md">
       <div class="grid grid-cols-12 gap-6">
@@ -55,11 +58,12 @@
       <div class="mt-6 text-right">
         <p>Total: <span class="font-semibold">{{ formatIDR(total) }}</span></p>
         <p class="mt-4 font-semibold">Paying with <span
-            :class="['text-primary-500 font-semibold decoration-primary-100', payloadPaymentDurianpay ? '' : 'hover:cursor-pointer underline']"
-            @click="payloadPaymentDurianpay ? {} :isModalPaymentMethodOpen = true">{{
+            :class="['text-primary-500 font-semibold decoration-primary-100', payloadPaymentDurianPay ? '' : 'hover:cursor-pointer underline']"
+            @click="payloadPaymentDurianPay ? {} :isModalPaymentMethodOpen = true">{{
             storePaymentMethod.type ? storePaymentMethod.type : 'Select'
           }} {{ invoice?.payment_subtype }}</span></p>
-        <p class="font-semibold">{{ payloadPaymentDurianpay?.data.response.account_number }}</p>
+        <p class="font-semibold">{{ payloadPaymentDurianPay?.data.response.account_number }}</p>
+        <p class="mt-4 font-normal underline hover:cursor-pointer" @click="isModalPaymentTutorialOpen = true">How to pay?</p>
       </div>
 
       <div class="mt-8 text-center">
@@ -83,10 +87,13 @@ import {Merchant} from "~/types/merchant";
 import {useActiveMerchant} from "~/stores/merchant/active-merchant";
 import {usePaymentMethod} from "~/stores/invoice/payment-method";
 import api from "~/services/api";
+import {PayloadPaymentDurianPay, PaymentPayloadDurianPay} from "~/types/payload_payment_durianpay";
 
 const route = useRoute()
 
 const isModalPaymentMethodOpen: Ref<boolean> = ref(false)
+const isModalPaymentTutorialOpen: Ref<boolean> = ref(false)
+const payloadPaymentDurianPay: Ref<PaymentPayloadDurianPay | null> = ref(null)
 
 const storePaymentMethod = usePaymentMethod()
 const storeActiveMerchant = useActiveMerchant()
@@ -104,6 +111,8 @@ onMounted(() => {
       const paymentSubtype = storeFetchInvoice.invoiceDetail?.payment_subtype;
 
       usePaymentMethod().setType(paymentType, paymentSubtype)
+
+      payloadPaymentDurianPay.value = JSON.parse(JSON.parse(storeFetchInvoice.invoiceDetail?.payload_payment_durianpay!))
     })
     storeFetchInvoice.fetchInvoiceItems(invoiceId)
 
@@ -118,8 +127,6 @@ onMounted(() => {
 const merchant: ComputedRef<Merchant | null> = computed(() => storeActiveMerchant.merchant)
 const invoice: ComputedRef<Invoice | null> = computed(() => storeFetchInvoice.invoiceDetail)
 const invoiceItems: ComputedRef<InvoiceItem[]> = computed(() => storeFetchInvoice.listInvoiceItem)
-
-const payloadPaymentDurianpay = computed(() => JSON.parse(JSON.parse(storeFetchInvoice.invoiceDetail?.payload_payment_durianpay!)))
 
 const total: ComputedRef<number> = computed(() => {
   let total = 0

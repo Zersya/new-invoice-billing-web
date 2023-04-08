@@ -63,7 +63,7 @@
             storePaymentMethod.type ? storePaymentMethod.type : 'Select'
           }} {{ invoice?.payment_subtype }}</span></p>
         <p class="font-semibold">{{ payloadPaymentDurianPay?.data.response.account_number }}</p>
-        <p class="mt-4 font-normal underline hover:cursor-pointer" @click="isModalPaymentTutorialOpen = true">How to pay?</p>
+        <p v-if="payloadPaymentDurianPay" class="mt-4 font-normal underline hover:cursor-pointer" @click="isModalPaymentTutorialOpen = true">How to pay?</p>
       </div>
 
       <div class="mt-8 text-center">
@@ -119,6 +119,7 @@ onMounted(() => {
     const config = useRuntimeConfig();
     api.subscribeDocument(config.public.databaseID, '6418753f5e769294335b', invoiceId, (data) => {
       storeFetchInvoice.invoiceDetail = data.payload
+      payloadPaymentDurianPay.value = JSON.parse(JSON.parse(data.payload?.payload_payment_durianpay!))
       storePaymentMethod.setType(data.payload.payment_type, data.payload.payment_subtype)
     })
   }

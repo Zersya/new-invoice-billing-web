@@ -246,7 +246,7 @@
           <general-button v-if="isVisibleAction" :is-loading="storeForm.isLoadingSubmit"
                           :disabled="!storeForm.isFormValid" type="submit"
                           class="mt-4">
-            {{ storeForm.id ? 'Save' : 'Create' }}
+            {{ storeForm.id ? 'Save' : 'Draft' }}
           </general-button>
           <general-button v-if="isVisibleAction" outlined :is-loading="storeForm.isLoadingPublish"
                           :disabled="!storeForm.isFormValid" type="button"

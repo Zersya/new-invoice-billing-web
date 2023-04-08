@@ -103,14 +103,6 @@ import {PropType} from "vue";
 import {PayloadPaymentDurianPay} from "~/types/payload_payment_durianpay";
 import {initAccordions} from "flowbite";
 
-onMounted(() => {
-  // delay 2 seconds to wait for the modal to be opened
-  setTimeout(() => {
-    initAccordions()
-  }, 2000)
-})
-
-
 const emit = defineEmits(['form-opened', 'form-closed'])
 
 const props = defineProps({
@@ -125,7 +117,7 @@ const props = defineProps({
 })
 
 function onModalOpened() {
-
+  initAccordions()
 }
 
 </script>

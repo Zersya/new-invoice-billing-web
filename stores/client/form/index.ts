@@ -140,6 +140,18 @@ export const useFormClient = defineStore('formClient', {
             this.tags.push(tag)
 
             await this.onSubmitUpdate()
+        },
+
+        async onSubmitReplaceTag(tag: string, index: number) {
+            this.tags[index] = tag
+
+            await this.onSubmitUpdate()
+        },
+
+        async onSubmitDeleteTag(index: number) {
+            this.tags.splice(index, 1)
+
+            await this.onSubmitUpdate()
         }
 
     }

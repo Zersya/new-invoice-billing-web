@@ -1,6 +1,6 @@
 <template>
   <form-client :is-modal-open="isModalFormClientOpen" @form-closed="isModalFormClientOpen = false"/>
-  <form-client-tags :is-modal-open="isModalFormClientTagsOpen" @form-closed="isModalFormClientTagsOpen = false"/>
+  <form-client-tags :is-modal-open="isModalFormClientTagsOpen" :selected-tag-client="selectedTagClient" @form-closed="isModalFormClientTagsOpen = false"/>
   <div class="w-full">
     <div class="flex justify-between">
       <div class="pb-4 bg-white dark:bg-gray-900">
@@ -77,11 +77,13 @@
           {{ client.email }}
         </td>
         <td class="px-6 py-4">
-          <span v-if="client.tags.length === 0"
-                class="hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                @click="isModalFormClientTagsOpen = true; storeForm.setClient(client)">Add Tags..</span>
-          <span
-              v-else> {{ client.tags.join(', ') }}</span>
+          <span v-for="tag in client.tags"
+                class="ml-2 hover:cursor-pointer font-medium hover:text-blue-600 hover:dark:text-blue-500 hover:hover:underline"
+                @click="isModalFormClientTagsOpen = true; storeForm.setClient(client); selectedTagClient = tag">{{
+              tag
+            }},</span> <span
+            class="ml-2 hover:cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            @click="isModalFormClientTagsOpen = true; storeForm.setClient(client)">Add Tags..</span>
         </td>
         <td class="px-6 py-4">
           <span
@@ -112,6 +114,7 @@ const storeForm = useFormClient()
 const isModalFormClientOpen = ref(false)
 const isModalFormClientTagsOpen = ref(false)
 const searchKey = ref('')
+const selectedTagClient = ref('')
 
 definePageMeta({
   title: "ClientsPage",

@@ -5,6 +5,7 @@ export const showToast = {
         const toastStore = useToast()
 
         toastStore.setToastMessage(message)
+        toastStore.setIsToastError(false)
         toastStore.setIsToastVisible(true)
     },
     error(message: string) {
